@@ -1,7 +1,10 @@
+.extra-slider .wrapper {
+	position: relative;
+}
 .extra-slider .wrapper > ul {
 	display: block;
 	list-style: none;
-	position: relative;
+	position: absolute;
 }
 
 /* SLIDE TRANSITION */
