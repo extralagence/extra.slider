@@ -1,0 +1,31 @@
+.extra-slider .wrapper > ul {
+	display: block;
+	list-style: none;
+	position: relative;
+}
+
+/* SLIDE TRANSITION */
+.extra-slider-slide .wrapper > ul > li {
+	display: block;
+	list-style: none;
+	float: left;
+	margin: 0;
+	padding: 0;
+}
+.extra-slider-slide .wrapper > ul:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+/* FADE TRANSITION */
+.extra-slider-fade .wrapper > ul > li {
+	display: block;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	position: absolute;
+	top: 0; left: 0;
+}

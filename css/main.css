@@ -1,0 +1,234 @@
+/*********************
+ *
+ * FONTS
+ *
+ ********************/
+@font-face {
+    font-family: 'clear_sans';
+    src: url('../fonts/ClearSans-Bold-webfont.eot');
+    src: url('../fonts/ClearSans-Bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/ClearSans-Bold-webfont.woff') format('woff'),
+         url('../fonts/ClearSans-Bold-webfont.ttf') format('truetype'),
+         url('../fonts/ClearSans-Bold-webfont.svg#clear_sansbold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+/*********************
+ *
+ * RESET
+ *
+ ********************/
+*,
+*:before,
+*:after {
+	margin: 0px;
+	padding: 0px;
+	border: 0px none;
+	outline: none;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	-webkit-font-smoothing: antialiased;
+	font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+}
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+nav,
+section {
+	display: block;
+}
+
+audio,
+canvas,
+video {
+	display: inline-block;
+}
+
+audio:not([controls]) {
+	display: none;
+}
+
+[hidden] {
+	display: none;
+}
+
+input[type="search"],
+input[type="email"],
+input[type="text"] {
+	-webkit-appearance: initial;
+}
+
+/* SELECTIONS */
+::-moz-selection,
+::selection {
+	background: #000000;
+	color: #FFFFFF;
+	text-shadow: none;
+}
+
+/*********************
+ *
+ * CONTENT
+ *
+ ********************/
+body {
+	background-color: #F3F3F3;
+	color: #303030;
+	font-family: 'clear_sans', arial, sans-serif;
+	font-size: 16px;
+	line-height: 20px;
+	overflow-y: scroll;
+}
+a {
+	color: #fff799;
+	text-decoration: none;
+}
+a:hover {
+	color: #303030;
+}
+input,
+select,
+textarea {
+	font-family: serif;
+	font-size: 16px;
+	line-height: 20px;
+}
+/* IMG */
+img {
+	display: block;
+	height: auto;
+	max-width: 100%;
+	vertical-align: bottom;
+	width: auto;
+}
+/* HIDDEN */
+.hidden {
+	position: absolute;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	height: 1px;
+	width: 1px;
+	margin: -1px;
+	padding: 0;
+	border: 0;
+}
+/* MAIN-TITLE */
+.main-title {
+	background: transparent url(../img/logo.png) 0 0 no-repeat;
+	background-image: none, url(../img/logo.svg);
+	background-size: contain;
+	margin: 30px auto;
+	overflow: hidden;
+	text-indent: 100%;
+	white-space: nowrap;
+	width: 140px;
+	height: 139px;
+}
+/* MENU */
+.main-navigation {	
+	margin: 50px auto 15px auto;
+	width: 900px;
+	max-width: 100%;
+}
+.main-navigation > ul {
+	display: -webkit-box;
+	display: -moz-box;
+	display: box;
+
+	-webkit-box-orient: horizontal;
+	-moz-box-orient: horizontal;
+	box-orient: horizontal;
+
+	-webkit-box-align: start;
+	-moz-box-align: start;
+	box-align: start;
+
+	-webkit-box-direction: normal;
+	-moz-box-direction: normal;
+	box-direction: normal;
+
+	-webkit-box-pack: justify;
+	-moz-box-pack: justify;
+	box-pack: justify;
+	
+	width: 100%;
+}
+.main-navigation li {
+	-webkit-box-flex: 1;
+	-moz-box-flex: 1;
+	box-flex: 1;
+
+	-webkit-box-ordinal-group: 1;
+	-moz-box-ordinal-group: 1;
+	box-ordinal-group: 1;
+	
+	list-style: none;
+	position: relative;
+	text-align: center;
+}
+.main-navigation li a {
+	background: #FFFFFF;
+	border: 1px solid #dddddd;
+	color: #000000;
+	display: block;
+	margin: 0 10px;
+	padding: 10px;
+	text-transform: uppercase;
+	white-space: nowrap;	
+}
+.recent .main-navigation li:first-child a {
+	margin-left: 0;
+}
+.recent .main-navigation li:last-child a {
+	margin-right: 0;
+}
+.main-navigation li a:hover {
+	border-color: #303030;
+}
+.main-navigation li a.active {
+	background: #fff799;
+}
+/* SECTION */
+.single-content {
+	text-align: center;
+}
+.single-content h2 {
+	font-size: 30px;
+	font-weight: normal;
+	margin-top: 35px;
+	text-transform: uppercase;
+}
+.single-content h3 {
+	font-family: Georgia, serif;
+	font-size: 20px;
+	font-style: italic;
+	font-weight: normal;
+	margin-top: 8px;
+}
+.hljs {
+	font-size: 12px;
+	text-align: left;
+}
+/************
+ *
+ *
+ * EASY CLEARING
+ *
+ *
+ ************/
+#foo:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
