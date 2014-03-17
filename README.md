@@ -1,0 +1,4 @@
+extra.slider
+============
+
+Extra slider
