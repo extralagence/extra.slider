@@ -73,8 +73,7 @@
 				currentItem = 1,
 				previousItem = total,
 				pages = Math.ceil($items.length / visible),
-				slideTween,
-				isOldIE = $('html').hasClass('lte8');
+				slideTween;
 
 			/*********************************** INITIALIZE ***********************************/
 			switch (opt.type) {
@@ -249,7 +248,7 @@
 				time = typeof time !== 'undefined' ? time : opt.speed;
 				gotoPage(page, time);
 			});
-			if(opt.resizable && !isOldIE) {
+			if(opt.resizable) {
 				$window.on('resize', function() {
 					update();
 				});
