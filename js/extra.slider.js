@@ -73,7 +73,8 @@
 				currentItem = 1,
 				previousItem = total,
 				pages = Math.ceil($items.length / visible),
-				slideTween;
+				slideTween,
+				isOldIE = $('html').hasClass('lte8');
 
 			/*********************************** INITIALIZE ***********************************/
 			switch (opt.type) {
@@ -198,7 +199,6 @@
 				if (opt.type === "slide") {
 					adjustPosition();
 					if(opt.draggable && opt.type == 'slide') {
-						console.log("oco");
 						$wrapper.swipe("enable");
 					}
 				}
@@ -249,7 +249,7 @@
 				time = typeof time !== 'undefined' ? time : opt.speed;
 				gotoPage(page, time);
 			});
-			if(opt.resizable) {
+			if(opt.resizable && !isOldIE) {
 				$window.on('resize', function() {
 					update();
 				});
@@ -275,7 +275,9 @@
 				$pagination.find("a").removeClass("active").eq(currentItem - 1).addClass("active");
 				$('a', $pagination).each(function (i) {
 					$(this).click(function () {
-						if (i + 1 != currentItem) gotoPage(i + 1);
+						if (i + 1 != currentItem){
+							gotoPage(i + 1);
+						}
 						return false;
 					});
 				});
@@ -345,10 +347,8 @@
 							$this.removeClass('mouseDown');
 							
 							if(direction == 'right') {
-								console.log("right");
 								gotoPrev();
 							} else if(direction == 'left') {
-								console.log("left");
 								gotoNext();
 							}
 						}
