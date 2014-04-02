@@ -64,6 +64,8 @@ $(document).ready(function() {
 			current = target;
 			updateTabs();
 		
+		return false;
+		
 	});
 	
 	// update

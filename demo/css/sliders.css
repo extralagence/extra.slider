@@ -3,18 +3,10 @@
  * DEFAULT STYLES
  *
  ********************/
-.extra-slider {
-	overflow: visible;
-}
 .extra-slider,
 .extra-slider .wrapper {
-	margin: 0 auto;
-	position: relative;
 	width: 900px;
 	max-width: 100%;
-}
-.extra-slider .wrapper {
-	overflow: hidden;
 }
 /*********************
  *

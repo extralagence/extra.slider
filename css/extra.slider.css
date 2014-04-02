@@ -1,3 +1,19 @@
+/*********************
+ *
+ * DEFAULT STYLES
+ *
+ ********************/
+.extra-slider {
+	overflow: visible;
+}
+.extra-slider,
+.extra-slider .wrapper {
+	margin: 0 auto;
+	position: relative;
+}
+.extra-slider .wrapper {
+	overflow: hidden;
+}
 .extra-slider .wrapper > ul {
 	display: block;
 	list-style: none;
