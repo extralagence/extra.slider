@@ -70,7 +70,7 @@
 				singleHeight = getDimension('height'),
 				total = $items.length,
 				visible = Math.ceil($wrapper.width() / singleWidth),
-				currentItem = 1,
+				currentItem = 0,
 				previousItem = total,
 				pages = Math.ceil($items.length / visible),
 				slideTween;
@@ -120,6 +120,8 @@
 				time = typeof time !== 'undefined' ? time : opt.speed;
 
 				var dir = _page < currentItem ? -1 : 1;
+				
+				$items.removeClass('active');
 
 				if (!TweenMax.isTweening($slider) && !TweenMax.isTweening($items)) {
 
@@ -135,7 +137,7 @@
 					}
 
 					if (opt.onMoveStart && time > 0) {
-						opt.onMoveStart(currentItem, pages);
+						opt.onMoveStart(currentItem, total, $this);
 					}
 
 					if (opt.paginate) {
@@ -171,6 +173,7 @@
 				$slider.css('width', '');
 				$items.css('width', '').css('height', '');
 				$wrapper.css('width', '').css('height', '');
+				
 
 				// GET DIMENSIONS
 				singleWidth = getDimension('width');
@@ -190,20 +193,30 @@
 					'width': (singleWidth * visible) + 'px',
 					'height': singleHeight + 'px'
 				});
+				
+				// ACTIVE CLASS
+				$items.removeClass('active');
+				$items.eq(currentItem + numClones).addClass('active');
+				
 			}
 
 			/*********************************** FUNCTIONS ***********************************/
 			// when the first animation is finished
 			function endHandler(time) {
+				// endHandler for slide
 				if (opt.type === "slide") {
 					adjustPosition();
 					if(opt.draggable && opt.type == 'slide') {
-						console.log("oco");
 						$wrapper.swipe("enable");
 					}
 				}
+				
+				// set active
+				$items.eq(currentItem + numClones).addClass('active');
+				
+				// listener
 				if (opt.onMoveEnd && time > 0) {
-					opt.onMoveEnd(currentItem, total);
+					opt.onMoveEnd(currentItem, total, $this, $items.eq(currentItem + numClones));
 				}
 			}
 			// adjust the slider position
@@ -250,7 +263,7 @@
 				gotoPage(page, time);
 			});
 			if(opt.resizable) {
-				$window.on('resize', function() {
+				$window.on('extra.resize', function() {
 					update();
 				});
 			}
@@ -312,6 +325,9 @@
 
 			/*********************************** DRAGGABLE ***********************************/
 			if (opt.draggable && opt.type == 'slide') {
+				
+				$this.addClass('extra-slider-draggable');
+				
 				var reference = 0,
 					margin = 0;
 
@@ -345,10 +361,8 @@
 							$this.removeClass('mouseDown');
 							
 							if(direction == 'right') {
-								console.log("right");
 								gotoPrev();
 							} else if(direction == 'left') {
-								console.log("left");
 								gotoNext();
 							}
 						}
@@ -357,16 +371,15 @@
 			}
 
 			/*********************************** ON INIT ***********************************/
+			// TRIGGER ON INIT
 			if (opt.onInit) {
-				opt.onInit(total, $(this));
+				opt.onInit($items.eq(0 + numClones), total, $(this));
 			}
 
 			/*********************************** FIRST UPDATE ***********************************/
 			update();
 			$window.load(function() {
-				if(opt.resizable) {
-					update();
-				}
+				update();
 			});
 
 		});

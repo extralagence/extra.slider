@@ -214,9 +214,8 @@ img {
 	font-weight: normal;
 	margin-top: 8px;
 }
-.hljs {
-	font-size: 12px;
-	text-align: left;
+.single-content .code {
+	margin-top: 50px;
 }
 /************
  *
