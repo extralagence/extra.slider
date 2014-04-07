@@ -40,7 +40,7 @@
 
 		<!-- IE9.js -->
 		<!--[if (gte IE 6)&(lte IE 8)]>
-		<script src="<?php echo $root; ?>demo/js/selectivizr.js"></script>
+		<script src="<?php echo $root; ?>demo/js/selectivizr-min.js"></script>
 		<script src="<?php echo $root; ?>demo/js/html5shiv.js"></script>
 		<![endif]-->
 
