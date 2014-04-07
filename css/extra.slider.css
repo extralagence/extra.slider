@@ -10,6 +10,7 @@
 .extra-slider .wrapper {
 	margin: 0 auto;
 	position: relative;
+	z-index: 10;
 }
 .extra-slider .wrapper {
 	overflow: hidden;
