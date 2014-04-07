@@ -86,6 +86,9 @@
  * CONTENT
  *
  ********************/
+.extra-slider ul li:before {
+	display: none;
+}
 .extra-slider li {
 	position: relative;
 }
@@ -94,13 +97,19 @@
 	font-size: 12px;
 	font-family: Georgia, serif;
 	font-style: italic;
+	margin: 0;
 	position: absolute;
 	right: 10px;
 	bottom: 5px;
 	text-align: right;
 }
+.extra-slider li p a {
+	color: #fff799;
+	background: transparent;
+}
 .extra-slider li p a:hover {
-	color: #FFFFFF;
+	color: #fff799;
+	background: transparent;
 	text-decoration: underline;
 }
 /*********************
@@ -132,11 +141,16 @@
 #multiple p {
 	display: none;
 }
-#drag .extra-slider {
-	cursor: url(../img/drag-cursor-up.png), url(../img/drag-cursor-up.cur), e-resize;
-}
-#drag .extra-slider.mouseDown {
-	cursor: url(../img/drag-cursor-down.png), url(../img/drag-cursor-down.cur), e-resize;
+#automatic .loader {
+	background: #fff799;
+	display: block;
+	position: absolute;
+	bottom: 0px;
+	left: 0;
+	z-index: 20000;
+	width: 100%;
+	height: 5px;
+	
 }
 /*********************
  *

@@ -1,0 +1,37 @@
+.extra-signature {
+	display: inline-block;
+	font-size: 12px;
+	line-height: 18px;
+	vertical-align: bottom;	
+}
+.extra-signature-list {
+	display: inline-block;
+	font-size: 12px;
+	line-height: 18px;
+	overflow: hidden;
+	height: 18px;
+	text-align: left;
+	vertical-align: bottom;
+}
+.extra-signature-logo .image {
+	display: inline-block;
+	margin: 0 2px;
+	vertical-align: bottom;
+	width: 18px;
+	height: 18px;
+}
+.extra-signature-logo:hover {
+	color: #00BAFF;
+}
+.extra-signature-logo:hover .image {
+	fill: #00BAFF;
+}
+.extra-signature-logo .alt {
+	display: none;
+}
+.lte8 .extra-signature-logo .image {
+	display: none;
+}
+.lte8 .extra-signature-logo .alt {
+	display: inline-block;
+}

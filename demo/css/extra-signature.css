@@ -1,0 +1,15 @@
+.extra-signature {
+	display: inline-block;
+	font-size: 14px;
+	line-height: 18px;
+	vertical-align: bottom;	
+}
+.extra-signature-list {
+	display: inline-block;
+	font-size: 14px;
+	line-height: 18px;
+	overflow: hidden;
+	height: 18px;
+	text-align: left;
+	vertical-align: bottom;
+}

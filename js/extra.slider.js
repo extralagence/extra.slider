@@ -48,12 +48,14 @@
 			'navigate': true,
 			'paginate': true,
 			'paginateContent': '',
-			'resizable': true,
+			'resizable': false,
 			'speed': 0.5,
 			'type': 'slide',
 			'onInit': null,
 			'onMoveStart': null,
-			'onMoveEnd': null
+			'onMoveEnd': null,
+			'onPause': null,
+			'onResume': null,
 		}, options);
 
 		this.each(function () {
@@ -70,10 +72,10 @@
 				singleHeight = getDimension('height'),
 				total = $items.length,
 				visible = Math.ceil($wrapper.width() / singleWidth),
-				currentItem = 0,
+				currentItem = 1,
 				previousItem = total,
 				pages = Math.ceil($items.length / visible),
-				slideTween;
+				drag;
 
 			/*********************************** INITIALIZE ***********************************/
 			switch (opt.type) {
@@ -148,7 +150,7 @@
 						default:
 						case "slide":
 							var left = -(singleWidth * (currentItem + numClones));
-							slideTween = TweenMax.to($slider, time, {css: {left: left}, onComplete: endHandler, onCompleteParams:[time]});
+							TweenMax.to($slider, time, {css: {left: left}, onComplete: endHandler, onCompleteParams:[time]});
 							break;
 						case "fade":
 							TweenMax.to($items.eq(previousItem - 1).css("zIndex", 1), time, {css: {autoAlpha: 0}});
@@ -182,7 +184,7 @@
 				if (opt.type == 'slide') {
 					// SET DIMENSIONS
 					$slider.width(99999);
-					slideTween = TweenMax.set($slider, {css: {left: -(singleWidth * (currentItem + numClones))}});
+					TweenMax.set($slider, {css: {left: -(singleWidth * (currentItem + numClones))}});
 				}
 				// SET DIMENSIONS
 				$items.css({
@@ -206,8 +208,8 @@
 				// endHandler for slide
 				if (opt.type === "slide") {
 					adjustPosition();
-					if(opt.draggable && opt.type == 'slide') {
-						$wrapper.swipe("enable");
+					if(opt.draggable && opt.type == 'slide' && typeof(drag) != 'undefined') {
+						Draggable.get($slider).enable();
 					}
 				}
 				
@@ -246,24 +248,24 @@
 			}
 
 			/*********************************** LISTENERS ***********************************/
-			$(this).on('update', function () {
+			$(this).on('update', function() {
 				update();
 			});
 			// Bind next
-			$(this).on('next', function (event, time) {
+			$(this).on('next', function(event, time) {
 				gotoNext(time);
 			});
 			// Bind prev
-			$(this).on('prev', function (event, time) {
+			$(this).on('prev', function(event, time) {
 				gotoPrev(time);
 			});
 			// Bind goto page
-			$(this).on('goto', function (event, page, time) {
+			$(this).on('goto', function(event, page, time) {
 				time = typeof time !== 'undefined' ? time : opt.speed;
 				gotoPage(page, time);
 			});
 			if(opt.resizable) {
-				$window.on('extra.resize', function() {
+				$window.on('resize', function() {
 					update();
 				});
 			}
@@ -317,8 +319,16 @@
 				}
 				autoSlide();
 				$this.on('mouseenter', function() {
+					// listener
+					if (opt.onPause) {
+						opt.onPause();
+					}
 					autoTween.pause();	
 				}).on('mouseleave', function() {
+					// listener
+					if (opt.onResume) {
+						opt.onResume();
+					}
 					autoTween.resume();	
 				});
 			}
@@ -330,50 +340,34 @@
 				
 				var reference = 0,
 					margin = 0;
-
-				$wrapper.swipe({
-					allowPageScroll: "vertical",
-					threshold: 50,
-					excludedElements: '.noSwipe',
-					triggerOnTouchEnd: true,
-					triggerOnTouchLeave: true,
-					tap: function (event, target) {},
-					swipeStatus: function (event, phase, direction, distance, duration) {
-
-						if(slideTween.isActive()) {
-							$wrapper.swipe("disable");
-							return;
-						}
-						
-						if (phase == 'start') {
-							$this.addClass('mouseDown');
+				if(typeof(Draggable) != 'undefined') {
+					drag = Draggable.create($slider, {
+						type:"left",
+						cursor: 'e-resize',
+						onDragStart: function() {
+							$this.addClass('extra-slider-mouse-down');
 							reference = parseFloat($slider.css('left'));
-							margin = 0;
-						}
-
-						if (phase == 'move' && (direction == 'left' || direction == 'right')) {
-							var dir = (direction === 'left') ? -1 : 1,
-								left = reference + (dir * distance) + margin;
-							TweenMax.set($slider, {css: {'left': left}});
-						}
-
-						if ((phase == 'end' || phase == 'cancel') && (direction == 'left' || direction == 'right')) {
-							$this.removeClass('mouseDown');
-							
-							if(direction == 'right') {
+						}, 
+						onDragEnd: function() {
+							Draggable.get($slider).disable();
+							var direction = ((reference - this.x) > 0) ? -1 : 1; 
+							$this.removeClass('extra-slider-mouse-down');
+							if(direction == 1) {
 								gotoPrev();
-							} else if(direction == 'left') {
+							} else if(direction == -1) {
 								gotoNext();
 							}
 						}
-					}
-				});
+					});
+				} else {
+					console.log('Draggable is not detected. You need to load it to enable drag. More info here : http://www.greensock.com/draggable/');
+				}
 			}
 
 			/*********************************** ON INIT ***********************************/
 			// TRIGGER ON INIT
 			if (opt.onInit) {
-				opt.onInit($items.eq(0 + numClones), total, $(this));
+				opt.onInit($items.eq(0 + numClones), total, $this);
 			}
 
 			/*********************************** FIRST UPDATE ***********************************/
