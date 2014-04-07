@@ -1,5 +1,112 @@
 <section class="main-content">
     <article class="single-content" id="documentation">
-        Coucou
+        <h3>Minimum html needed</h3>
+        <pre><code>&lt;div class=&quot;extra-slider&quot;&gt;
+    &lt;div class=&quot;wrapper&quot;&gt;
+        &lt;ul&gt;
+            &lt;li&gt;
+                &lt;img src=&quot;http://bit.ly/1gnYuBa&quot; alt=&quot;&quot; width=&quot;900&quot; height=&quot;500&quot;&gt;
+            &lt;/li&gt;
+            &lt;li&gt;
+                &lt;img src=&quot;http://bit.ly/NQX3zB&quot; alt=&quot;&quot; width=&quot;900&quot; height=&quot;500&quot;&gt;
+            &lt;/li&gt;
+            &lt;li&gt;
+                &lt;img src=&quot;http://bit.ly/1gnZxBh&quot; alt=&quot;&quot; width=&quot;900&quot; height=&quot;500&quot;&gt;
+            &lt;/li&gt;
+            &lt;li&gt;
+                &lt;img src=&quot;http://bit.ly/1gnYtxa&quot; alt=&quot;&quot; width=&quot;900&quot; height=&quot;500&quot;&gt;
+            &lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;navigation&quot;&gt;
+        &lt;a href=&quot;#&quot; class=&quot;prev&quot;&gt;Précédent&lt;/a&gt;
+        &lt;a href=&quot;#&quot; class=&quot;next&quot;&gt;Suivant&lt;/a&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;pagination&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        <h3>Embed the necessary javascript</h3>
+        <pre><code>&lt;!-- Load jQuery --&gt;
+&lt;script src=&quot;http://code.jquery.com/jquery-1.11.0.min.js&quot;&gt;&lt;/script&gt;
+
+&lt;!-- Load Greensock's TweenMax --&gt;
+&lt;script src=&quot;http://cdnjs.cloudflare.com/ajax/libs/gsap/1.11.6/TweenMax.min.js&quot;&gt;&lt;/script&gt;
+
+&lt;!-- Load Greensock's Draggable plugin --&gt;
+&lt;script src=&quot;http://cdnjs.cloudflare.com/ajax/libs/gsap/1.11.6/utils/Draggable.min.js&quot;&gt;&lt;/script&gt;
+
+&lt;!-- Load the slider javascript file --&gt;
+&lt;script src=&quot;js/extra.slider.min.js&quot;&gt;</code></pre>
+        <h3>Add the minimum css</h3>
+        <pre><code>&lt;link rel=&quot;stylesheet&quot; href=&quot;css/extra.slider.css&quot;&gt;</code></pre>
+        <h3>Initialize the slider</h3>
+        <pre><code>&lt;script&gt;
+jQuery(document).ready(function($) {
+    $(&quot;.extra-slider&quot;).extraSlider();
+});
+&lt;/script&gt;</code></pre>
+        <h3>Options available</h3>
+        <dl class="doc-list">
+            <dt>auto</dt>
+            <dd><strong>default :</strong> false</dd>
+            <dd>add an integer, corresponding to the delay in second</dd>
+            <dt>draggable</dt>
+            <dd><strong>default :</strong> false</dd>
+            <dd>set it to true to make the slider draggable</dd>
+            <dt>keyboard</dt>
+            <dd><strong>default :</strong> false</dd>
+            <dd>set it to true to make it keyboard controllable</dd>
+            <dt>margin</dt>
+            <dd><strong>default :</strong> 0</dd>
+            <dd>pass an integer to show more images on the sides</dd>
+            <dt>navigate</dt>
+            <dd><strong>default :</strong> true</dd>
+            <dd>pass it to false to stop binding the navigation links</dd>
+            <dt>paginate</dt>
+            <dd><strong>default :</strong> true</dd>
+            <dd>pass it to false to stop binding and setting the pagination links</dd>
+            <dt>paginateContent</dt>
+            <dd><strong>default :</strong> an empty string</dd>
+            <dd>add a custom string to fill the pagination links</dd>
+            <dt>resizable</dt>
+            <dd><strong>default :</strong> false</dd>
+            <dd>pass it to true to update the slider when the viewport resizes</dd>
+            <dt>speed</dt>
+            <dd><strong>default :</strong> 0.5</dd>
+            <dd>pass a number in second to set the animation speed</dd>
+            <dt>type</dt>
+            <dd><strong>default :</strong> 'slide'</dd>
+            <dd>it can be 'fade' or 'slide'</dd>
+            <dt>onInit</dt>
+            <dd><strong>default :</strong> null</dd>
+            <dd><strong>params :</strong> currentItem (jQuery object), numItems (int), slider (jQuery object)</dd>
+            <dd>pass a function that will be called when the slider is set up</dd>
+            <dt>onMoveStart</dt>
+            <dd><strong>default :</strong> null</dd>
+            <dd><strong>params :</strong> currentItem (int), numItems (int), slider (jQuery object)</dd>
+            <dd>pass a function that will be called when the slider starts animating</dd>
+            <dt>onMoveEnd</dt>
+            <dd><strong>default :</strong> null</dd>
+            <dd><strong>params :</strong> currentItem (int), numItems (int), slider (jQuery object)</dd>
+            <dd>pass a function that will be called when the slider stops animating</dd>
+            <dt>onPause</dt>
+            <dd><strong>default :</strong> null</dd>
+            <dd><strong>params :</strong> slider (jQuery object)</dd>
+            <dd>if auto is defined, this function is called when the slider pauses the automatic slider</dd>
+            <dt>onResume</dt>
+            <dd><strong>default :</strong> null</dd>
+            <dd><strong>params :</strong> slider (jQuery object)</dd>
+            <dd>if auto is defined, this function is called when the slider resumes the automatic timer</dd>
+        </dl>
+        <h3>Methods availables</h3>
+        <dl class="doc-list">
+            <dt>update</dt>
+            <dd>$('.extra-slider').trigger('update');</dd>
+            <dt>next</dt>
+            <dd>$('.extra-slider').trigger('next');</dd>
+            <dt>prev</dt>
+            <dd>$('.extra-slider').trigger('prev');</dd>
+            <dt>goto</dt>
+            <dd>$('.extra-slider').trigger('goto', [slideNumber]);</dd>
+        </dl>
     </article>
 </section>

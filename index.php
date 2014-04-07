@@ -40,8 +40,8 @@
 
 		<!-- IE9.js -->
 		<!--[if (gte IE 6)&(lte IE 8)]>
-		<script src="<?php echo $root; ?>demo/js/selectivizr-min.js"></script>
 		<script src="<?php echo $root; ?>demo/js/html5shiv.js"></script>
+		<script src="<?php echo $root; ?>demo/js/selectivizr-min.js"></script>
 		<![endif]-->
 
 	</head>
@@ -71,6 +71,7 @@
                     <li>passion</li>
                     <li>donuts</li>
                     <li>hands</li>
+                    <li>cats</li>
                     <li><s>Dreamweaver</s></li>
     		    </ul></div>
             </footer>

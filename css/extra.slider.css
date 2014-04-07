@@ -20,7 +20,6 @@
 	list-style: none;
 	position: relative;
 }
-
 /* SLIDE TRANSITION */
 .extra-slider-slide .wrapper > ul > li {
 	display: block;
@@ -36,7 +35,6 @@
 	clear: both;
 	visibility: hidden;
 }
-
 /* FADE TRANSITION */
 .extra-slider-fade .wrapper > ul > li {
 	display: block;
