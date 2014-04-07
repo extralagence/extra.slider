@@ -41,21 +41,21 @@
 		}
 
 		var opt = $.extend({
-			'auto': 0,
+			'auto': false,
 			'draggable': false,
 			'keyboard': false,
 			'margin': 0,
 			'navigate': true,
 			'paginate': true,
 			'paginateContent': '',
-			'resizable': false,
+			'resizable': true,
 			'speed': 0.5,
 			'type': 'slide',
 			'onInit': null,
 			'onMoveStart': null,
 			'onMoveEnd': null,
 			'onPause': null,
-			'onResume': null,
+			'onResume': null
 		}, options);
 
 		this.each(function () {
@@ -321,13 +321,13 @@
 				$this.on('mouseenter', function() {
 					// listener
 					if (opt.onPause) {
-						opt.onPause();
+						opt.onPause($this);
 					}
 					autoTween.pause();	
 				}).on('mouseleave', function() {
 					// listener
 					if (opt.onResume) {
-						opt.onResume();
+						opt.onResume($this);
 					}
 					autoTween.resume();	
 				});
@@ -367,7 +367,7 @@
 			/*********************************** ON INIT ***********************************/
 			// TRIGGER ON INIT
 			if (opt.onInit) {
-				opt.onInit($items.eq(0 + numClones), total, $this);
+				opt.onInit(currentItem, total, $this);
 			}
 
 			/*********************************** FIRST UPDATE ***********************************/

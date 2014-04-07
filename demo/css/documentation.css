@@ -1,0 +1,41 @@
+pre {
+    background: #FFFFFF;
+    border: 1px solid #dddddd;
+    font-size: 12px;
+    line-height: 16px;
+    margin: 10px 0;
+    padding: 15px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+.single-content h3 {
+    margin-top: 30px;
+}
+.doc-list {
+    background: #FFFFFF;
+    border: 1px solid #dddddd;
+    margin: 10px 0;
+    padding: 15px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+.doc-list dt {
+    border-top: 1px solid #CCCCCC;
+    font-size: 18px;
+    font-weight: 700;
+    margin-top: 20px;
+    padding-top: 20px;
+}
+.doc-list dt:first-child {
+    border-top: 0;
+    margin-top: 0;
+    padding-top: 0;
+}
+.doc-list dd {
+    font-size: 14px;
+    margin-top: 5px;
+}
+.doc-list dd strong {
+    color: #404040;
+    font-weight: normal;
+}
