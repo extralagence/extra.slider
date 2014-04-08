@@ -36,10 +36,6 @@
 
 	$.fn.extraSlider = function (options) {
 
-		function repeat(str, n) {
-			return new Array(n + 1).join(str);
-		}
-
 		var opt = $.extend({
 			'auto': false,
 			'draggable': false,
@@ -74,8 +70,12 @@
 				visible = Math.ceil($wrapper.width() / singleWidth),
 				currentItem = 1,
 				previousItem = total,
-				pages = Math.ceil($items.length / visible),
-				drag;
+				// AUTOMATIC
+				autoTween,
+				// DRAG
+				drag,
+				reference = 0,
+				direction;
 
 			/*********************************** INITIALIZE ***********************************/
 			switch (opt.type) {
@@ -121,7 +121,8 @@
 
 				time = typeof time !== 'undefined' ? time : opt.speed;
 
-				var dir = _page < currentItem ? -1 : 1;
+				var dir = _page < currentItem ? -1 : 1,
+					left;
 				
 				$items.removeClass('active');
 
@@ -149,7 +150,7 @@
 					switch (opt.type) {
 						default:
 						case "slide":
-							var left = -(singleWidth * (currentItem + numClones));
+							left = -(singleWidth * (currentItem + numClones));
 							TweenMax.to($slider, time, {css: {left: left}, onComplete: endHandler, onCompleteParams:[time]});
 							break;
 						case "fade":
@@ -235,10 +236,12 @@
 			}
 			// get the blocs dimensions
 			function getDimension(type) {
-				var max = 0;
+				var max = 0,
+					item,
+					current;
 				$items.each(function () {
-					var item = $(this);
-					var current = type == 'height' ? item.outerHeight(true) : item.outerWidth(true);
+					item = $(this),
+					current = (type == 'height') ? item.outerHeight(true) : item.outerWidth(true);
 					if (current > max) {
 						max = current;
 					}
@@ -284,7 +287,7 @@
 
 			/*********************************** PAGINATION ***********************************/
 			if (opt.paginate && $pagination.length) {
-				for (var i = 0; i < total; i++) {
+				for (i = 0; i < total; i++) {
 					$("<a>", {'href': '#'}).html(opt.paginateContent != '' ? opt.paginateContent : i + 1).appendTo($pagination);
 				}
 				$pagination.find("a").removeClass("active").eq(currentItem - 1).addClass("active");
@@ -309,7 +312,6 @@
 			}
 
 			/*********************************** AUTO ***********************************/
-			var autoTween;
 			if (!isNaN(opt.auto) && opt.auto > 0) {
 				function autoSlide() {
 					autoTween = TweenMax.delayedCall(opt.auto, function() {
@@ -319,14 +321,12 @@
 				}
 				autoSlide();
 				$this.on('mouseenter pause', function() {
-					console.log("pause");
 					// listener
 					if (opt.onPause) {
 						opt.onPause($this);
 					}
 					autoTween.pause();	
 				}).on('mouseleave resume', function() {
-					console.log("resume");
 					// listener
 					if (opt.onResume) {
 						opt.onResume($this);
@@ -340,19 +340,17 @@
 				
 				$this.addClass('extra-slider-draggable');
 				
-				var reference = 0,
-					margin = 0;
 				if(typeof(Draggable) != 'undefined') {
 					drag = Draggable.create($slider, {
 						type:"left",
-						cursor: 'e-resize',
+						cursor: 'move',
 						onDragStart: function() {
 							$this.addClass('extra-slider-mouse-down');
 							reference = parseFloat($slider.css('left'));
 						}, 
 						onDragEnd: function() {
 							Draggable.get($slider).disable();
-							var direction = ((reference - this.x) > 0) ? -1 : 1; 
+							direction = ((reference - this.x) > 0) ? -1 : 1; 
 							$this.removeClass('extra-slider-mouse-down');
 							if(direction == 1) {
 								gotoPrev();
