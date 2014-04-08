@@ -1,0 +1,49 @@
+# Include your project-specific ignores in this file
+# Read about how to use .gitignore: https://help.github.com/articles/ignoring-files
+
+# VIM IGNORES
+.*.s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+*~
+
+# NETBEANS IGNORES
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+
+# SUBLIME TEXT IGNORES
+*.sublime-workspace
+
+# LINUX IGNORES
+.*
+!.gitignore
+*~
+
+# WINDOWS IGNORES
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+# Folder config file
+Desktop.ini
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+## SASS Ignores - "Sassy CSS" http://sass-lang.com/
+*.sass-cache
+
+# ROOTS IGNORE
+doc/*
+CHANGELOG.md
+CONTRIBUTING.md
+
+# Nakee Ignore
+*.backup
+lib/Nakee/config.php
+assets/img/icons-*.png
+assets/img/logos-*.png
