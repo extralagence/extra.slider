@@ -1,4 +1,5 @@
-extra.slider
+Extra slider
 ============
 
-Extra slider
+
+Have a look at http://slider.extralagence.com/
