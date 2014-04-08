@@ -47,3 +47,5 @@ CONTRIBUTING.md
 lib/Nakee/config.php
 assets/img/icons-*.png
 assets/img/logos-*.png
+
+.htaccess
