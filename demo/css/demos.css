@@ -93,3 +93,21 @@
 .single-content .code {
 	margin-top: 50px;
 }
+
+@media only screen and (max-width: 960px) and (min-width: 650px) {
+	#wrapper > .navigation li a {
+		margin: 0 1px;
+	}
+}
+@media only screen and (max-width: 650px) {
+	#wrapper > .navigation > ul,
+	#wrapper > .navigation > ul > li {
+		display: block;
+	}
+	#wrapper > .navigation li {
+		margin: 1px 0;
+	}
+	#wrapper > .navigation li a {
+		margin: 0;
+	}
+}

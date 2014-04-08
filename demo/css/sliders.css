@@ -124,11 +124,15 @@
 #margin > .extra-slider > .wrapper {
 	overflow: visible;
 }
+#margin .navigation a.next,
+#margin .navigation a.prev {
+	left: 50%;
+}
 #margin .navigation a.next {
-	right: 20px;
+	margin-left: 415px;	
 }
 #margin .navigation a.prev {
-	left: 20px;
+	margin-left: -485px;
 }
 #multiple .wrapper {
 	width: 900px;
@@ -163,5 +167,17 @@
 	}
 	.extra-slider .navigation a.prev {
 		left: 20px;
+	}
+	#margin .navigation a.next {
+		margin-left: auto;	
+	}
+	#margin .navigation a.prev {
+		left: 20px;
+		margin-left: auto;
+	}
+}
+@media only screen and (max-width: 650px){
+	.extra-slider .pagination {
+		display: none;
 	}
 }

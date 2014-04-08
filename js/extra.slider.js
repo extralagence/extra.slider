@@ -175,7 +175,6 @@
 				$slider.css('width', '');
 				$items.css('width', '').css('height', '');
 				$wrapper.css('width', '').css('height', '');
-				
 
 				// GET DIMENSIONS
 				singleWidth = getDimension('width');
@@ -264,6 +263,7 @@
 				time = typeof time !== 'undefined' ? time : opt.speed;
 				gotoPage(page, time);
 			});
+			// on resize
 			if(opt.resizable) {
 				$window.on('resize', function() {
 					update();
@@ -318,13 +318,15 @@
 					});
 				}
 				autoSlide();
-				$this.on('mouseenter', function() {
+				$this.on('mouseenter pause', function() {
+					console.log("pause");
 					// listener
 					if (opt.onPause) {
 						opt.onPause($this);
 					}
 					autoTween.pause();	
-				}).on('mouseleave', function() {
+				}).on('mouseleave resume', function() {
+					console.log("resume");
 					// listener
 					if (opt.onResume) {
 						opt.onResume($this);

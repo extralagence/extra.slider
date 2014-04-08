@@ -4,12 +4,35 @@ pre {
     font-size: 12px;
     line-height: 16px;
     margin: 10px 0;
+    overflow: auto;
     padding: 15px;
     -webkit-border-radius: 5px;
     border-radius: 5px;
 }
+.single-content .title {
+	color: #202020;
+	font-size: 25px;
+	font-weight: 700;
+	margin-top: 35px;
+	margin-bottom: 0;
+	text-align: center;
+	text-transform: uppercase;
+}
+.single-content .subtitle {
+	font-family: Georgia, serif;
+	font-size: 20px;
+	font-style: italic;
+	font-weight: normal;
+	margin-top: 8px;
+	margin-bottom: 100px;
+	text-align: center;
+}
 .single-content h3 {
+    color: #404040;
     margin-top: 30px;
+}
+.single-content p {
+	margin-top: 5px;
 }
 .doc-list {
     background: #FFFFFF;
@@ -21,6 +44,7 @@ pre {
 }
 .doc-list dt {
     border-top: 1px solid #CCCCCC;
+    color: #404040;
     font-size: 18px;
     font-weight: 700;
     margin-top: 20px;

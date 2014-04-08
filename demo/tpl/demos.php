@@ -57,8 +57,8 @@
                 </ul>
             </div>
             <div class="navigation">
-                <a href="#" class="prev">Précédent</a>
-                <a href="#" class="next">Suivant</a>
+                <a href="#" class="prev">Previous</a>
+                <a href="#" class="next">Next</a>
             </div>
             <div class="pagination"></div>
         </div>
@@ -99,11 +99,6 @@
                     </li>
                 </ul>
             </div>
-            <div class="navigation">
-                <a href="#" class="prev">Précédent</a>
-                <a href="#" class="next">Suivant</a>
-            </div>
-            <div class="pagination"></div>
         </div>
 
         <h2>Draggable slider</h2>
@@ -142,11 +137,6 @@
                     </li>
                 </ul>
             </div>
-            <div class="navigation">
-                <a href="#" class="prev">Précédent</a>
-                <a href="#" class="next">Suivant</a>
-            </div>
-            <div class="pagination"></div>
         </div>
 
         <h2>Keyboard slider</h2>
@@ -186,8 +176,8 @@
                 </ul>
             </div>
             <div class="navigation">
-                <a href="#" class="prev">Précédent</a>
-                <a href="#" class="next">Suivant</a>
+                <a href="#" class="prev">Previous</a>
+                <a href="#" class="next">Next</a>
             </div>
             <div class="pagination"></div>
         </div>
@@ -229,8 +219,8 @@
                 </ul>
             </div>
             <div class="navigation">
-                <a href="#" class="prev">Précédent</a>
-                <a href="#" class="next">Suivant</a>
+                <a href="#" class="prev">Previous</a>
+                <a href="#" class="next">Next</a>
             </div>
             <div class="pagination"></div>
         </div>
@@ -272,8 +262,8 @@
                 </ul>
             </div>
             <div class="navigation">
-                <a href="#" class="prev">Précédent</a>
-                <a href="#" class="next">Suivant</a>
+                <a href="#" class="prev">Previous</a>
+                <a href="#" class="next">Next</a>
             </div>
             <div class="pagination"></div>
         </div>
