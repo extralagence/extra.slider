@@ -1,4 +1,4 @@
-Extra slider
+Extra Slider
 ============
 
 
