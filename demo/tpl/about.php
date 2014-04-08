@@ -30,8 +30,8 @@
                 </ul>
             </div>
             <div class="navigation">
-                <a href="#" class="prev">Précédent</a>
-                <a href="#" class="next">Suivant</a>
+                <a href="#" class="prev">Previous</a>
+                <a href="#" class="next">Next</a>
             </div>
             <div class="pagination"></div>
         </div>
@@ -39,7 +39,7 @@
             <li class="infinite">
                 <h3>Infinite loop</h3>
                 <p>You never see the end</p>
-                <a class="big-link" href="./demos/#/fade">&nbsp;</a>
+                <a class="big-link" href="./demos/">&nbsp;</a>
             </li>
             <li class="responsive">
                 <h3>Responsive</h3>

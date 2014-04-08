@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 17.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1 Tiny//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11-tiny.dtd">
+<svg version="1.1" baseProfile="tiny" id="Calque_1"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 21 42"
+	 overflow="scroll" xml:space="preserve">
+<g>
+	<circle fill="#FFFFFF" cx="10.5" cy="10.5" r="9.274"/>
+	<path fill="#808080" d="M10.5,21C4.71,21,0,16.29,0,10.5S4.71,0,10.5,0S21,4.71,21,10.5S16.29,21,10.5,21z M10.5,2.451
+		c-4.438,0-8.049,3.611-8.049,8.049s3.611,8.049,8.049,8.049s8.049-3.611,8.049-8.049S14.938,2.451,10.5,2.451z"/>
+</g>
+<polygon fill="#808080" points="14.591,10.806 10.5,5.734 6.408,10.806 8.799,10.806 8.799,15.266 12.201,15.266 12.201,10.806 "/>
+<g>
+	<circle fill="#FFFFFF" cx="10.5" cy="31.5" r="9.274"/>
+	<path fill="#404040" d="M10.5,42C4.71,42,0,37.29,0,31.5S4.71,21,10.5,21S21,25.71,21,31.5S16.29,42,10.5,42z M10.5,23.451
+		c-4.438,0-8.049,3.611-8.049,8.049s3.611,8.049,8.049,8.049s8.049-3.611,8.049-8.049S14.938,23.451,10.5,23.451z"/>
+</g>
+<polygon fill="#404040" points="14.591,31.806 10.5,26.734 6.408,31.806 8.799,31.806 8.799,36.266 12.201,36.266 12.201,31.806 "/>
+</svg>

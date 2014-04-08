@@ -4,12 +4,16 @@ $(document).ready(function() {
 	
 	// draggable
 	$("#drag .extra-slider").extraSlider({
-		'draggable': true
+		'draggable': true,
+		'paginate': false,
+		'navigate': false,
 	});
 	
 	// keyboard
 	$("#keyboard .extra-slider").extraSlider({
-		'keyboard': true
+		'keyboard': true,
+		'paginate': false,
+		'navigate': false,
 	});
 	
 	// margin
@@ -39,7 +43,7 @@ $(document).ready(function() {
 		'onMoveStart': moveLoader
 	});
 	function moveLoader(currentItem, total, slider) {
-		autoTween = TweenMax.from(slider.find('.loader'), 5, {width: 0});
+		autoTween = TweenMax.fromTo(slider.find('.loader'), 5, {width: 0}, {width: "100%"});
 	}
 	function movePause(currentItem, total, slider) {
 		autoTween.pause();
@@ -66,9 +70,9 @@ $(document).ready(function() {
 	}
 		
 	function updateTabs() {
-		$tabs.not(current).hide();
+		$tabs.not(current).hide().find('.extra-slider').trigger('pause');
 		current.show();
-		current.find('.extra-slider').trigger('update');
+		current.find('.extra-slider').trigger('update').trigger('resume');
 		$nav.find('a').removeClass('active');
 		$nav.find('a[href="#' + current.attr('id') + '"]').addClass('active');
 		window.location.hash = '/' + current.attr('id');

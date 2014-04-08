@@ -4,6 +4,9 @@
     global $root, $rootPath;
     $rootPath = realpath('./') . '/'; 
     $base = isset($_SERVER['REDIRECT_BASE']) ? $_SERVER['REDIRECT_BASE'] : $_SERVER['BASE'];
+    if(substr($base, -1) != '/') {
+        $base .= '/';
+    }
     $root = "http://".$_SERVER['HTTP_HOST'].$base;
 
     global $page;
@@ -24,6 +27,10 @@
 		<meta charset="utf-8">
 
 		<title>Extra Slider</title>
+		
+		<!-- MOBILE FRIENDLY -->      
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 
 		<link rel="stylesheet" href="<?php echo $root; ?>css/extra.slider.css">
 		<link rel="stylesheet" href="<?php echo $root; ?>demo/css/main.css">
@@ -43,6 +50,17 @@
 		<script src="<?php echo $root; ?>demo/js/html5shiv.js"></script>
 		<script src="<?php echo $root; ?>demo/js/selectivizr-min.js"></script>
 		<![endif]-->
+		
+		<script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        
+          ga('create', 'UA-31777856-37', 'extralagence.com');
+          ga('send', 'pageview');
+        
+        </script>
 
 	</head>
 
@@ -58,6 +76,7 @@
     		<?php include_once('demo/tpl/' . $page . '.php'); ?>
     		
     		<footer id="footer">
+    		    <a class="totop" href="#">Back to top</a>
     		    <div class="extra-signature">Made by <a class="extra-signature-logo" href="http://www.extralagence.com" target="_blank"><span class="alt">Extra</span><svg class="image" version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
      viewBox="0 0 346.4 346.3" enable-background="new 0 0 346.4 346.3" xml:space="preserve">
     <polygon points="235,121.8 235,84.2 111.9,84.2 111.9,84.3 111.4,84.3 111.4,262.1 154.7,262.1 154.7,262.1 234.5,262.1 
@@ -72,16 +91,16 @@
                     <li>donuts</li>
                     <li>hands</li>
                     <li>cats</li>
+                    <li>cookies</li>
                     <li><s>Dreamweaver</s></li>
     		    </ul></div>
             </footer>
 		</div>
 
 		<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-		<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.11.6/TweenMax.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.11.6/TweenMax.min.js"></script>
         <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.11.6/plugins/ScrollToPlugin.min.js"></script>
         <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.11.6/utils/Draggable.min.js"></script>
-		<script src="<?php echo $root; ?>js/lib/jquery.touchSwipe.min.js"></script>
 		<script src="<?php echo $root; ?>demo/js/flexie.min.js"></script>
 		<script src="<?php echo $root; ?>js/extra.slider.js"></script>
         <script src="<?php echo $root; ?>demo/js/extra.signature.js"></script>
