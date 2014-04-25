@@ -186,12 +186,12 @@ img.inline {
 	background: transparent url(../img/logo.png) 0 0 no-repeat;
 	background-image: none, url(../img/logo.svg);
 	background-size: contain;
-	margin: 30px auto;
+	margin: 50px auto;
 	overflow: hidden;
 	text-indent: 100%;
 	white-space: nowrap;
-	width: 140px;
-	height: 139px;
+	width: 275px;
+	height: 49px;
 }
 /************
  *

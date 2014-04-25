@@ -1,9 +1,9 @@
 <section class="main-content">
     <article class="single-content" id="documentation">
-        
+
         <h2 class="title">So simple</h2>
         <h3 class="subtitle">your grandma' would get bored setting it</h3>
-        
+
         <h3>Minimum html needed</h3>
         <p>You can have any markup you want in the &lt;li&gt; tags, not necessary images.</p>
         <pre><code>&lt;div class=&quot;extra-slider&quot;&gt;
@@ -52,7 +52,7 @@ jQuery(document).ready(function($) {
     $(&quot;.extra-slider&quot;).extraSlider();
 });
 &lt;/script&gt;</code></pre>
-        <h3>Options available</h3>
+        <h3>Options</h3>
         <dl class="doc-list">
             <dt>auto</dt>
             <dd><strong>default:</strong> false</dd>
@@ -74,10 +74,10 @@ jQuery(document).ready(function($) {
             <dd>pass it to false to stop binding and setting the pagination links</dd>
             <dt>paginateContent</dt>
             <dd><strong>default:</strong> an empty string</dd>
-            <dd>add a custom string to fill the pagination links</dd>
+            <dd>add a custom string to fill the pagination links. The string %d will be replaced by the index.</dd>
             <dt>resizable</dt>
-            <dd><strong>default:</strong> false</dd>
-            <dd>pass it to true to update the slider when the viewport resizes</dd>
+            <dd><strong>default:</strong> true</dd>
+            <dd>pass it to false to stop updating the slider when the viewport resizes</dd>
             <dt>speed</dt>
             <dd><strong>default:</strong> 0.5</dd>
             <dd>pass a number in second to set the animation speed</dd>
@@ -90,12 +90,20 @@ jQuery(document).ready(function($) {
             <dd>pass a function that will be called when the slider is set up</dd>
             <dt>onMoveStart</dt>
             <dd><strong>default:</strong> null</dd>
-            <dd><strong>params:</strong> currentItem (int), numItems (int), slider (jQuery object)</dd>
+            <dd><strong>params:</strong> currentItem (jQuery object), numItems (int), slider (jQuery object)</dd>
             <dd>pass a function that will be called when the slider starts animating</dd>
             <dt>onMoveEnd</dt>
             <dd><strong>default:</strong> null</dd>
-            <dd><strong>params:</strong> currentItem (int), numItems (int), slider (jQuery object)</dd>
+            <dd><strong>params:</strong> currentItem (jQuery object), numItems (int), slider (jQuery object)</dd>
             <dd>pass a function that will be called when the slider stops animating</dd>
+            <dt>onUpdate</dt>
+            <dd><strong>default:</strong> null</dd>
+            <dd><strong>params:</strong> currentItem (jQuery object), numItems (int), slider (jQuery object)</dd>
+            <dd>pass a function that will be called when the slider updates itself (after a resize for example)</dd>
+            <dt>onUpdateClones</dt>
+            <dd><strong>default:</strong> null</dd>
+            <dd><strong>params:</strong> currentItem (jQuery object), numItems (int), slider (jQuery object)</dd>
+            <dd>pass a function that will be called when the slider updates the clones (when type is set to slide)</dd>
             <dt>onPause</dt>
             <dd><strong>default:</strong> null</dd>
             <dd><strong>params:</strong> slider (jQuery object)</dd>
@@ -105,7 +113,7 @@ jQuery(document).ready(function($) {
             <dd><strong>params:</strong> slider (jQuery object)</dd>
             <dd>if auto is defined, this function is called when the slider resumes the automatic timer</dd>
         </dl>
-        <h3>Methods availables</h3>
+        <h3>Methods</h3>
         <p>Note: $('.extra-slider') can be replace with an ID you used to set the slider.</p>
         <dl class="doc-list">
             <dt>update</dt>
@@ -120,6 +128,31 @@ jQuery(document).ready(function($) {
             <dt>goto</dt>
             <dd>$('.extra-slider').trigger('goto', [slideNumber]);</dd>
             <dd>Go to the slide you specify with slideNumber (must be an integer)</dd>
+        </dl>
+        <h3>Events</h3>
+        <p>Note: $('.extra-slider') can be replace with an ID you used to set the slider.</p>
+        <dl class="doc-list">
+            <dt>init.extra.slider</dt>
+            <dd>$('.extra-slider').on('init.extra.slider', function(event, currentItem, numItems, slider) {});</dd>
+            <dd>Triggered when the slider inits the first time</dd>
+            <dt>moveStart.extra.slider</dt>
+            <dd>$('.extra-slider').on('moveStart.extra.slider', function(event, currentItem, numItems, slider) {});</dd>
+            <dd>Triggered when the slider starts its animation process</dd>
+            <dt>moveEnd.extra.slider</dt>
+            <dd>$('.extra-slider').on('moveEnd.extra.slider', function(event, currentItem, numItems, slider) {});</dd>
+            <dd>Triggered when the slider has finished moving</dd>
+            <dt>update.extra.slider</dt>
+            <dd>$('.extra-slider').on('update.extra.slider', function(event, currentItem, numItems, slider) {});</dd>
+            <dd>Triggered  when the slider updates itself</dd>
+            <dt>updateClones.extra.slider</dt>
+            <dd>$('.extra-slider').on('update.extra.slider', function(event, currentItem, numItems, slider) {});</dd>
+            <dd>Triggered when the slider updates the clones on slide type</dd>
+            <dt>pause.extra.slider</dt>
+            <dd>$('.extra-slider').on('pause.extra.slider', function(event, currentItem, numItems, slider) {});</dd>
+            <dd>Triggers an update when the slider is paused in auto mode</dd>
+            <dt>resume.extra.slider</dt>
+            <dd>$('.extra-slider').on('resume.extra.slider', function(event, currentItem, numItems, slider) {});</dd>
+            <dd>Triggers an update when the slider is resumed in auto mode</dd>
         </dl>
     </article>
 </section>

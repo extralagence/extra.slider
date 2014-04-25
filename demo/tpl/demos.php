@@ -259,6 +259,18 @@
                             <a href="http://bit.ly/H75Z08">Download</a>&nbsp;&#8226;&nbsp;By&nbsp;<a href="http://www.florianklauer.de">Florian Klauer</a>
                         </p>
                     </li>
+                    <li>
+                        <img src="<?php echo $root; ?>demo/img/gallery/img2.jpg" alt="" width="900" height="500">
+                        <p>
+                            <a href="http://bit.ly/K6nD6G">Download</a>&nbsp;&#8226;&nbsp;By&nbsp;<a href="http://www.carlsson.it">Elias Carlsson</a>
+                        </p>
+                    </li>
+                    <li>
+                        <img src="<?php echo $root; ?>demo/img/gallery/img1.jpg" alt="" width="900" height="500">
+                        <p>
+                            <a href="http://bit.ly/H75Z08">Download</a>&nbsp;&#8226;&nbsp;By&nbsp;<a href="http://www.florianklauer.de">Florian Klauer</a>
+                        </p>
+                    </li>
                 </ul>
             </div>
             <div class="navigation">

@@ -29,7 +29,7 @@
 	top: 50%;
 	z-index: 50;
 	text-indent: 100%;
-	white-space: nowrap; 
+	white-space: nowrap;
 	width: 70px;
 	height: 70px;
 }
@@ -63,17 +63,17 @@
 .extra-slider .pagination a {
 	background: #FFFFFF;
 	border: 2px solid transparent;
+	color: transparent;
 	display: inline-block;
 	margin: 0 4px;
-	overflow: hidden;
 	text-indent: 100%;
 	white-space: nowrap;
 	position: relative;
 	left: -50%;
 	width: 12px;
 	height: 12px;
-	-webkit-border-radius: 35px;
-	border-radius: 35px;
+	-webkit-border-radius: 20px;
+	border-radius: 20px;
 }
 .extra-slider .pagination a.active {
 	background-color: #fff799;
@@ -118,7 +118,7 @@
  *
  ********************/
 #margin .extra-slider {
-	overflow: hidden; 
+	overflow: hidden;
 	width: 100%;
 }
 #margin > .extra-slider > .wrapper {
@@ -129,7 +129,7 @@
 	left: 50%;
 }
 #margin .navigation a.next {
-	margin-left: 415px;	
+	margin-left: 415px;
 }
 #margin .navigation a.prev {
 	margin-left: -485px;
@@ -154,7 +154,7 @@
 	z-index: 20000;
 	width: 100%;
 	height: 5px;
-	
+
 }
 /*********************
  *
@@ -169,7 +169,7 @@
 		left: 20px;
 	}
 	#margin .navigation a.next {
-		margin-left: auto;	
+		margin-left: auto;
 	}
 	#margin .navigation a.prev {
 		left: 20px;
