@@ -2,7 +2,7 @@
  *
  *
  *
- * EXTRA SLIDER 1.0
+ * EXTRA SLIDER 1.1
  *
  *
  *
