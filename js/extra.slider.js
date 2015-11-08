@@ -42,7 +42,9 @@
             'onPause': null,
             'onResume': null,
             'onUpdate': null,
-            'onUpdateClones': null
+            'onDragStart': null,
+            'onDragStop': null,
+            'onDragRepositioned': null
         }, options);
 
         this.each(function () {
@@ -483,6 +485,9 @@
                             drag.update();
                             startX = drag.x;
                             startItem = currentItem;
+                            if (opt.onDragStart) {
+                                opt.onDragStart($items.eq(currentItem + numClones), total + 1, $this);
+                            }
                         },
                         onDragEnd: function () {
                             var dragX = drag.x,
@@ -521,8 +526,14 @@
                                 x: left,
                                 onComplete: function () {
                                     update();
+                                    if (opt.onDragRepositioned) {
+                                        opt.onDragRepositioned($items.eq(currentItem + numClones), total + 1, $this);
+                                    }
                                 }
                             });
+                            if (opt.onDragStop) {
+                                opt.onDragStop($items.eq(currentItem + numClones), total + 1, $this);
+                            }
                         }
                     });
                     drag = Draggable.get($slider);
