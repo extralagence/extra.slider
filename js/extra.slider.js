@@ -18,8 +18,6 @@
         var opt = $.extend({
             'auto': false,
             'draggable': false,
-            'dragWindow': false,
-            'dragWindowObject': $window,
             'ease': Quad.easeOut,
             'forcedDimensions': true,
             'keyboard': false,
@@ -128,7 +126,7 @@
                 if (opt.onMoveEnd && time > 0) {
                     opt.onMoveEnd($items.eq(currentItem + numClones), total + 1, $this);
                 }
-                $this.trigger('moveEnd.extra.slider', [$items.eq(currentItem + numClones), total + 1, $this]);
+                $this.trigger('extra:slider:moveEnd', [$items.eq(currentItem + numClones), total + 1, $this]);
             }
 
             /*********************************** GO TO PAGE ***********************************/
@@ -170,7 +168,7 @@
                     if (opt.onMoveStart && time > 0) {
                         opt.onMoveStart($items.eq(realCurrentItem + numClones), total + 1, $this);
                     }
-                    $this.trigger('moveStart.extra.slider', [$items.eq(realCurrentItem + numClones), total + 1, $this]);
+                    $this.trigger('extra:slider:moveStart', [$items.eq(currentItem + numClones), total + 1, $this]);
 
                     if (opt.paginate) {
                         $pagination.each(function () {
@@ -266,7 +264,7 @@
                 if (opt.onUpdate) {
                     opt.onUpdate($items.eq(currentItem + numClones), total + 1, $this);
                 }
-                $this.trigger('update.extra.slider', [$items.eq(currentItem + numClones), total + 1, $this]);
+                $this.trigger('extra:slider:update', [$items.eq(currentItem + numClones), total + 1, $this]);
 
                 if (drag) {
                     drag.update();
@@ -295,24 +293,24 @@
                 if (opt.onUpdateClones) {
                     opt.onUpdateClones($items.eq(currentItem + numClones), total + 1, $this);
                 }
-                $this.trigger('updateClones.extra.slider', [$items.eq(currentItem + numClones), total + 1, $this]);
+                $this.trigger('extra:slider:updateClones', [$items.eq(currentItem + numClones), total + 1, $this]);
             }
 
             /*********************************** HELPER FUNCTIONS ***********************************/
             function gotoNext(time) {
-                $this.trigger('gotoNext.extra.slider', [$this]);
                 if (opt.onGotoNext) {
                     opt.onGotoNext($this);
                 }
+                $this.trigger('extra:slider:onGotoNext', [$items.eq(currentItem + numClones), total + 1, $this]);
                 time = (time !== undefined) ? time : opt.speed;
                 gotoPage(currentItem + 1, time);
             }
 
             function gotoPrev(time) {
-                $this.trigger('gotoPrev.extra.slider', [$this]);
                 if (opt.onGotoPrev) {
                     opt.onGotoPrev($this);
                 }
+                $this.trigger('extra:slider:onGotoPrev', [$items.eq(currentItem + numClones), total + 1, $this]);
                 time = time !== undefined ? time : opt.speed;
                 gotoPage(currentItem - 1, time);
             }
@@ -434,14 +432,14 @@
                     if (opt.onPause) {
                         opt.onPause($this);
                     }
-                    $this.trigger('pause.extra.slider', [$this]);
+                    $this.trigger('extra:slider:pause', [$items.eq(currentItem + numClones), total + 1, $this]);
                     autoTween.pause();
                 }).on('mouseleave resume', function () {
                     // listener
                     if (opt.onResume) {
                         opt.onResume($this);
                     }
-                    $this.trigger('resume.extra.slider', [$this]);
+                    $this.trigger('extra:slider:resume', [$items.eq(currentItem + numClones), total + 1, $this]);
                     autoTween.resume();
                 });
             }
@@ -488,6 +486,7 @@
                             if (opt.onDragStart) {
                                 opt.onDragStart($items.eq(currentItem + numClones), total + 1, $this);
                             }
+                            $this.trigger('extra:slider:onDragStart', [$items.eq(currentItem + numClones), total + 1, $this]);
                         },
                         onDragEnd: function () {
                             var dragX = drag.x,
@@ -524,16 +523,19 @@
                             currentItem = roundedDraggedPage;
                             TweenMax.to($slider, opt.speed, {
                                 x: left,
+                                ease: opt.ease,
                                 onComplete: function () {
                                     update();
                                     if (opt.onDragRepositioned) {
                                         opt.onDragRepositioned($items.eq(currentItem + numClones), total + 1, $this);
                                     }
+                                    $this.trigger('extra:slider:onDragRepositioned', [$items.eq(currentItem + numClones), total + 1, $this]);
                                 }
                             });
                             if (opt.onDragEnd) {
                                 opt.onDragEnd($items.eq(currentItem + numClones), total + 1, $this);
                             }
+                            $this.trigger('extra:slider:onDragEnd', [$items.eq(currentItem + numClones), total + 1, $this]);
                         }
                     });
                     drag = Draggable.get($slider);
@@ -553,7 +555,7 @@
             if (opt.onInit) {
                 opt.onInit($items.eq(currentItem + numClones), total + 1, $this);
             }
-            $this.addClass('extra-slider-processed').trigger('init.extra.slider', [$items.eq(currentItem + numClones), total + 1, $this]);
+            $this.addClass('extra-slider-processed').trigger('extra:slider:init', [$items.eq(currentItem + numClones), total + 1, $this]);
             gotoPage(0);
         });
 
