@@ -43,7 +43,7 @@
             'onResume': null,
             'onUpdate': null,
             'onDragStart': null,
-            'onDragStop': null,
+            'onDragEnd': null,
             'onDragRepositioned': null
         }, options);
 
@@ -531,8 +531,8 @@
                                     }
                                 }
                             });
-                            if (opt.onDragStop) {
-                                opt.onDragStop($items.eq(currentItem + numClones), total + 1, $this);
+                            if (opt.onDragEnd) {
+                                opt.onDragEnd($items.eq(currentItem + numClones), total + 1, $this);
                             }
                         }
                     });
