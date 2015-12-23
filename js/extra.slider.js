@@ -557,7 +557,7 @@
                 opt.onInit($items.eq(currentItem + numClones), total + 1, $this);
             }
             $this.addClass('extra-slider-processed').trigger('extra:slider:init', [$items.eq(currentItem + numClones), total + 1, $this]);
-            gotoPage(0);
+            gotoPage(currentItem);
         });
 
         return this;
