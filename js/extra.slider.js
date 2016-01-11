@@ -2,7 +2,7 @@
  *
  *
  *
- * EXTRA SLIDER 1.2
+ * EXTRA SLIDER 2.0
  * http://slider.extralagence.com
  *
  *
