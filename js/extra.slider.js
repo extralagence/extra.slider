@@ -17,11 +17,12 @@
 
         var opt = $.extend({
             'auto': false,
+            'direction': 'x',
             'draggable': false,
             'ease': Quad.easeOut,
             'forcedDimensions': true,
             'keyboard': false,
-            'margin': 0,
+            'margin': 1,
             'minDrag': 0,
             'navigate': true,
             'navigation': null,
@@ -59,11 +60,9 @@
                 singleWidth = 0,
                 singleHeight = 0,
                 total = $items.length - 1,
-                visible = -1,
                 totalWidth = singleWidth,
                 currentItem = opt.startAt,
                 previousItem = total,
-                offset = 0,
                 i = 0,
             // AUTOMATIC
                 autoTween,
@@ -76,36 +75,110 @@
             if (opt.draggable) {
                 opt.margin += 1;
             }
+            
+
+            /*********************************** INITIALIZE ***********************************/
+            function initialize() {
+                
+                var tweenProperties = {};
+                
+                // set index
+                $items.each(function (index) {
+                    $(this).data('index', index);
+                });
+                
+                // is slide
+                if (opt.type === "slide") {
+                    $this.addClass('extra-slider-slide');
+                    updateClones();
+                    $items.each(function (index, element) {
+                        tweenProperties = {};
+                        tweenProperties[opt.direction] = (index * 100) + '%';
+                        TweenMax.set(element, tweenProperties);
+                    });
+                }
+                
+                // is fade
+                else if (opt.type === "fade") {
+                    $this.addClass('extra-slider-fade');
+                    $items.each(function (i) {
+                        if (i === currentItem) {
+                            TweenMax.set($(this), {autoAlpha: 1, zIndex: 2});
+                        } else {
+                            TweenMax.set($(this), {autoAlpha: 0, zIndex: 1});
+                        }
+                    });
+                }
+            }
+
+            /*********************************** UPDATE ***********************************/
+            function update() {
+                
+                if (opt.forcedDimensions) {
+                    $slider.css({
+                        width: 'auto',
+                        height: 'auto'
+                    }).width($items.first().width()).height($items.first().height());
+                }
+
+                // POSITION AND WIDTH
+                if (opt.type === 'slide') {
+                    adjustPosition();
+                }
+
+                // ACTIVE CLASS
+                $items.removeClass('active');
+                $items.eq(currentItem + numClones).addClass('active');
+
+                // TRIGGER ON UPDATE
+                if (opt.onUpdate) {
+                    opt.onUpdate($items.eq(currentItem + numClones), total + 1, $this);
+                }
+                $this.trigger('extra:slider:update', [$items.eq(currentItem + numClones), total + 1, $this]);
+
+                if (drag) {
+                    drag.update();
+                }
+
+            }
 
             /*********************************** FUNCTIONS ***********************************/
             // adjust the slider position
             function adjustPosition() {
+                
+                if(opt.type === 'slide' && $slider[0]._gsTransform === undefined) {
+                    return;
+                }
+                
+                var needAdjustement = false, 
+                    currentItemReference = currentItem,
+                    currentPosition = 0,
+                    adjustedPosition = 0,
+                    targetPosition = 0,
+                    delta = 0,
+                    position = 0,
+                    tweenProperties = {};
+                
                 if (currentItem > total) {
+                    needAdjustement = true;
                     // too far on the left (previous)
                     currentItem = 0;
                 } else if (currentItem < 0) {
+                    needAdjustement = true;
                     // too far on the right (next)
                     currentItem = total;
                 }
-                var left = -(totalWidth * currentItem + (numClones * singleWidth));
-                TweenMax.set($slider, {x: left});
+                
+                if(needAdjustement && opt.type === 'slide') {        
+                    currentPosition = $slider[0]._gsTransform[opt.direction + 'Percent'];
+                    targetPosition = -(currentItemReference + numClones);
+                    targetPosition *= 100;
+                    delta = targetPosition - currentPosition;
+                    position = -(((currentItem + numClones) * 100) + delta) + '%';
+                    tweenProperties[opt.direction] = position;
+                    TweenMax.set($slider, tweenProperties);
+                }
             }
-
-            // get the blocs dimensions
-            function getDimension(type) {
-                var max = 0,
-                    item,
-                    current;
-                $items.not('.cloned').each(function () {
-                    item = $(this);
-                    current = (type === 'height') ? item.outerHeight(true) : item.outerWidth(true);
-                    if (current > max) {
-                        max = current;
-                    }
-                });
-                return max;
-            }
-
             // when the first animation is finished
             function endHandler(time, previousItem) {
 
@@ -133,144 +206,43 @@
             /*********************************** GO TO PAGE ***********************************/
             function gotoPage(newPage, time) {
 
-                if (newPage === currentItem) {
-                    return;
-                }
-
                 time = (time !== undefined) ? time : opt.speed;
 
-                var realCurrentItem,
-                    left;
+                var position,
+                    tweenProperties = {
+                        onComplete: endHandler,
+                        onCompleteParams: [time],
+                        ease: opt.ease
+                    };
 
                 $items.removeClass('active');
 
-                if (!TweenMax.isTweening($slider) && !TweenMax.isTweening($items)) {
-
-                    previousItem = currentItem;
-                    currentItem = parseInt(newPage, 10);
-
-                    if (opt.type === 'fade' || opt.type === 'custom') {
-                        if (currentItem > total) {
-                            currentItem = 0;
-                        } else if (currentItem < 0) {
-                            currentItem = total;
-                        }
-                    }
-
-                    realCurrentItem = currentItem;
-                    if (realCurrentItem > total) {
-                        // too far on the left (previous)
-                        realCurrentItem = 0;
-                    } else if (realCurrentItem < 0) {
-                        // too far on the right (next)
-                        realCurrentItem = total;
-                    }
-
-                    if (opt.onMoveStart && time > 0) {
-                        opt.onMoveStart($items.eq(realCurrentItem + numClones), total + 1, $this);
-                    }
-                    $this.trigger('extra:slider:moveStart', [$items.eq(currentItem + numClones), total + 1, $this]);
-
-                    if (opt.paginate) {
-                        $pagination.each(function () {
-                            $(this).find("a").removeClass("active").eq(realCurrentItem).addClass("active");
-                        });
-                    }
-
-                    if (opt.type === "slide") {
-                        left = -(totalWidth * currentItem + (numClones * singleWidth));
-                        if (offset !== 0) {
-                            if (currentItem > total) {
-                                left += singleWidth * offset;
-                            }
-                            if (currentItem < 0) {
-                                left -= singleWidth * offset;
-                            }
-                        }
-                        TweenMax.to($slider, time, {
-                            x: left,
-                            onComplete: endHandler,
-                            onCompleteParams: [time],
-                            ease: opt.ease
-                        });
-                    } else if (opt.type === "fade") {
-                        $items.eq(previousItem).css("zIndex", 1);
-                        TweenMax.to($items.eq(currentItem).show().css("zIndex", 2), time, {
-                            css: {autoAlpha: 1},
-                            onComplete: endHandler,
-                            onCompleteParams: [time, $items.eq(previousItem)]
-                        });
-                    }
+                previousItem = currentItem;
+                currentItem = parseInt(newPage, 10);
+                
+                adjustPosition();
+                
+                if (opt.onMoveStart && time > 0) {
+                    opt.onMoveStart($items.eq(currentItem + numClones), total + 1, $this);
                 }
-            }
+                $this.trigger('extra:slider:moveStart', [$items.eq(currentItem + numClones), total + 1, $this]);
 
-            /*********************************** UPDATE ***********************************/
-            function update() {
-
-                var newVisible;
-
-                if (opt.forcedDimensions) {
-                    // RESET DIMENSIONS
-                    TweenMax.set($slider, {
-                        clearProps: "width"
-                    });
-                    TweenMax.set([$slider, $items, $wrapper], {
-                        clearProps: "width,height"
+                if (opt.paginate) {
+                    $pagination.each(function () {
+                        $(this).find("a").removeClass("active").eq(currentItem).addClass("active");
                     });
                 }
 
-                // GET DIMENSIONS
-                // TODO: one call
-                singleWidth = getDimension('width');
-                singleHeight = getDimension('height');
-
-                // MULTIPLE AT A TIME
-                totalWidth = singleWidth * visible;
-                newVisible = Math.max(1, Math.floor($wrapper.width() / singleWidth));
-                if (newVisible !== visible) {
-                    visible = newVisible;
-                    total = Math.floor(($items.not('.cloned').length - 1) / visible);
-                    offset = Math.abs((total + 1) * visible - ($items.not('.cloned').length));
-                    if (opt.type === 'slide') {
-                        updateClones();
-                    }
-                    update();
-                    return false;
+                if (opt.type === "slide") {
+                    position = -(currentItem + numClones);
+                    position = position * 100 + '%';
+                    tweenProperties[opt.direction] = position;
+                    TweenMax.to($slider, time, tweenProperties);
+                } else if (opt.type === "fade") {
+                    $items.eq(previousItem).css("zIndex", 1);
+                    tweenProperties.autoAlpha = 1;
+                    TweenMax.to($items.eq(currentItem).show().css("zIndex", 2), time, tweenProperties);
                 }
-
-
-                // SET DIMENSIONS
-                if (opt.forcedDimensions) {
-                    $items.css({
-                        'width': singleWidth + 'px',
-                        'height': singleHeight + 'px'
-                    });
-                    $wrapper.css({
-                        'width': totalWidth + 'px',
-                        'height': singleHeight + 'px'
-                    });
-                }
-
-                // POSITION AND WIDTH
-                if (opt.type === 'slide') {
-                    adjustPosition();
-                    $slider.width(99999);
-                }
-
-                // ACTIVE CLASS
-                $items.removeClass('active');
-                $items.eq(currentItem + numClones).addClass('active');
-
-                // TRIGGER ON UPDATE
-                if (opt.onUpdate) {
-                    opt.onUpdate($items.eq(currentItem + numClones), total + 1, $this);
-                }
-                $this.trigger('extra:slider:update', [$items.eq(currentItem + numClones), total + 1, $this]);
-
-                if (drag) {
-                    drag.update();
-                }
-
             }
 
             function updateClones() {
@@ -279,10 +251,11 @@
                 $items.find('.cloned').remove();
 
                 // CLONE BEFORE
-                $items.first().before($items.slice(-(visible + opt.margin + offset)).clone(true).addClass('cloned'));
+                $items.first().before($items.slice(-opt.margin).clone(true).addClass('cloned'));
 
                 // CLONE AFTER
-                $items.last().after($items.slice(0, visible + opt.margin + offset).clone(true).addClass('cloned'));
+                console.log(opt.margin);
+                $items.last().after($items.slice(0, opt.margin).clone(true).addClass('cloned'));
 
                 // GET ALL ITEMS (clones included)
                 $items = $slider.find('> li');
@@ -326,28 +299,8 @@
                     autoSlide();
                 });
             }
-
-            /*********************************** SETUP VARS ***********************************/
-            $items.each(function (index) {
-                $(this).data('index', index);
-            });
-            singleWidth = getDimension('width');
-            singleHeight = getDimension('height');
-
-            /*********************************** INITIALIZE ***********************************/
-            if (opt.type === "slide") {
-                $this.addClass('extra-slider-slide');
-            } else if (opt.type === "fade") {
-                $this.addClass('extra-slider-fade');
-                $items.each(function (i) {
-                    if (i === currentItem) {
-                        TweenMax.set($(this), {css: {autoAlpha: 1, zIndex: 2}});
-                    } else {
-                        TweenMax.set($(this), {css: {autoAlpha: 0, zIndex: 1}});
-                    }
-                });
-            }
-
+            
+            
             /*********************************** LISTENERS ***********************************/
             $(this).on('update', function () {
                 update();
@@ -373,17 +326,17 @@
             }
 
             /*********************************** NAVIGATION ***********************************/
-            if (opt.navigate) {
+            if (opt.navigate || $navigation.length) {
                 if (!$navigation.length) {
                     $navigation = $('<div class="navigation"><a href="#" class="prev">Previous</a><a href="#" class="next">Next</a></div>').insertAfter($wrapper);
                 }
-                $('a.prev', $navigation).on("click", function () {
+                $('a.prev', $navigation).on("click", function (event) {
+                    event.preventDefault();
                     gotoPrev();
-                    return false;
                 });
-                $('a.next', $navigation).on("click", function () {
+                $('a.next', $navigation).on("click", function (event) {
+                    event.preventDefault();
                     gotoNext();
-                    return false;
                 });
             }
 
@@ -452,32 +405,25 @@
 
                 if (Draggable !== undefined) {
                     Draggable.create($slider, {
-                        type: 'x',
+                        type: opt.direction,
                         cursor: 'move',
                         lockAxis: false,
                         throwProps: true,
                         zIndexBoost: false,
                         onDrag: function () {
-                            var draggedPage = ((-(drag.x / singleWidth)) - numClones),
+                            var realPosition = drag[opt.direction] - $slider[0]._gsTransform[opt.direction + 'Percent'],
+                                draggedPage = -(realPosition / 100 - numClones),
                                 targetPage,
-                                left;
-                            if (draggedPage % (total + 1) < 0 || (draggedPage >= total + 1)) {
-                                if (draggedPage % (total + 1) < 0) {
-                                    draggedPage = draggedPage % (total + 1);
+                                tweenProperties = {},
+                                position;
+                            if (draggedPage % (total) < 0 || (draggedPage >= total)) {
+                                if (draggedPage % (total) < 0) {
+                                    draggedPage = draggedPage % (total);
                                 }
-                                targetPage = draggedPage < 0 ? total + (1 + draggedPage) : draggedPage - (total + 1);
-                                left = -(totalWidth * targetPage + (numClones * singleWidth));
-                                if (offset !== 0) {
-                                    if (targetPage > total) {
-                                        left += singleWidth * offset;
-                                    }
-                                    if (targetPage < 0) {
-                                        left -= singleWidth * offset;
-                                    }
-                                }
-                                TweenMax.set($slider, {
-                                    x: left
-                                });
+                                targetPage = draggedPage < 0 ? total + (draggedPage) : draggedPage - (total);
+                                position = -(targetPage + numClones) * 100 + '%';
+                                tweenProperties[opt.direction] = position;
+                                TweenMax.set($slider, tweenProperties);
                             }
                         },
                         onDragStart: function () {
@@ -490,6 +436,8 @@
                             $this.trigger('extra:slider:onDragStart', [$items.eq(currentItem + numClones), total + 1, $this]);
                         },
                         onDragEnd: function () {
+                            adjustPosition();
+                            return;
                             var dragX = drag.x,
                                 draggedPage,
                                 roundedDraggedPage,
@@ -513,14 +461,6 @@
                                 }
                             }
                             left = -(totalWidth * roundedDraggedPage + (numClones * singleWidth));
-                            if (offset !== 0) {
-                                if (roundedDraggedPage > total) {
-                                    left += singleWidth * offset;
-                                }
-                                if (roundedDraggedPage < 0) {
-                                    left -= singleWidth * offset;
-                                }
-                            }
                             currentItem = roundedDraggedPage;
                             TweenMax.to($slider, opt.speed, {
                                 x: left,
@@ -546,10 +486,8 @@
             }
 
             /*********************************** FIRST UPDATE ***********************************/
+            initialize();
             update();
-            $window.load(function () {
-                update();
-            });
 
             /*********************************** ON INIT ***********************************/
             // TRIGGER ON INIT

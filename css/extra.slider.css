@@ -15,31 +15,19 @@
 .extra-slider .wrapper {
 	overflow: hidden;
 }
-.extra-slider .wrapper > ul {
+.extra-slider ul {
 	display: block;
 	list-style: none;
 	position: relative;
+    height: auto;
 }
-.extra-slider .wrapper > ul > li {
+.extra-slider li {
 	display: block;
 	list-style: none;
 	margin: 0;
 	padding: 0;
-    max-width: 100%;
-}
-/* SLIDE TRANSITION */
-.extra-slider-slide .wrapper > ul > li {
-	float: left;
-}
-.extra-slider-slide .wrapper > ul:after {
-	content: ".";
-	display: block;
-	height: 0;
-	clear: both;
-	visibility: hidden;
-}
-/* FADE TRANSITION */
-.extra-slider-fade .wrapper > ul > li {
 	position: absolute;
-	top: 0; left: 0;
+	top: 0; 
+    left: 0;
+    max-width: 100%;
 }
