@@ -60,7 +60,6 @@
                 singleWidth = 0,
                 singleHeight = 0,
                 total = $items.length - 1,
-                totalWidth = singleWidth,
                 currentItem = opt.startAt,
                 previousItem = total,
                 i = 0,
@@ -162,11 +161,11 @@
                 if (currentItem > total) {
                     needAdjustement = true;
                     // too far on the left (previous)
-                    currentItem = 0;
+                    currentItem = currentItem % (total + 1);
                 } else if (currentItem < 0) {
                     needAdjustement = true;
                     // too far on the right (next)
-                    currentItem = total;
+                    currentItem = currentItem + (total + 1);
                 }
                 
                 if(needAdjustement && opt.type === 'slide') {        
@@ -174,8 +173,8 @@
                     targetPosition = -(currentItemReference + numClones);
                     targetPosition *= 100;
                     delta = targetPosition - currentPosition;
-                    position = -(((currentItem + numClones) * 100) + delta) + '%';
-                    tweenProperties[opt.direction] = position;
+                    position = -(((currentItem + numClones) * 100) + delta);
+                    tweenProperties[opt.direction + 'Percent'] = position;
                     TweenMax.set($slider, tweenProperties);
                 }
             }
@@ -235,8 +234,8 @@
 
                 if (opt.type === "slide") {
                     position = -(currentItem + numClones);
-                    position = position * 100 + '%';
-                    tweenProperties[opt.direction] = position;
+                    position = position * 100;
+                    tweenProperties[opt.direction + 'Percent'] = position;
                     TweenMax.to($slider, time, tweenProperties);
                 } else if (opt.type === "fade") {
                     $items.eq(previousItem).css("zIndex", 1);
@@ -254,7 +253,6 @@
                 $items.first().before($items.slice(-opt.margin).clone(true).addClass('cloned'));
 
                 // CLONE AFTER
-                console.log(opt.margin);
                 $items.last().after($items.slice(0, opt.margin).clone(true).addClass('cloned'));
 
                 // GET ALL ITEMS (clones included)
@@ -410,69 +408,59 @@
                         lockAxis: false,
                         throwProps: true,
                         zIndexBoost: false,
-                        onDrag: function () {
-                            var realPosition = drag[opt.direction] - $slider[0]._gsTransform[opt.direction + 'Percent'],
-                                draggedPage = -(realPosition / 100 - numClones),
-                                targetPage,
-                                tweenProperties = {},
-                                position;
-                            if (draggedPage % (total) < 0 || (draggedPage >= total)) {
-                                if (draggedPage % (total) < 0) {
-                                    draggedPage = draggedPage % (total);
-                                }
-                                targetPage = draggedPage < 0 ? total + (draggedPage) : draggedPage - (total);
-                                position = -(targetPage + numClones) * 100 + '%';
-                                tweenProperties[opt.direction] = position;
-                                TweenMax.set($slider, tweenProperties);
-                            }
-                        },
+                        
                         onDragStart: function () {
-                            drag.update();
-                            startX = drag.x;
-                            startItem = currentItem;
+                            // Get the width to be able to convert pixel to percents
+                            singleWidth = $items.first().width();
+                            
+                            // Events
                             if (opt.onDragStart) {
                                 opt.onDragStart($items.eq(currentItem + numClones), total + 1, $this);
                             }
                             $this.trigger('extra:slider:onDragStart', [$items.eq(currentItem + numClones), total + 1, $this]);
                         },
+                        
                         onDragEnd: function () {
-                            adjustPosition();
-                            return;
-                            var dragX = drag.x,
-                                draggedPage,
-                                roundedDraggedPage,
-                                left;
-                            drag.update();
-                            draggedPage = ((-(drag.x / singleWidth)) - numClones);
-                            roundedDraggedPage = Math.round(draggedPage);
-                            if (Math.abs(dragX - startX) < opt.minDrag) {
-                                if (roundedDraggedPage >= total) {
-                                    roundedDraggedPage = total + 1;
-                                } else {
-                                    roundedDraggedPage = startItem;
-                                }
-                            } else if (dragX < startX) {
-                                if ((startItem % (total + 1)) === (roundedDraggedPage % (total + 1))) {
-                                    roundedDraggedPage += 1;
-                                }
+                            
+                            // Position, from pixels to percent
+                            var realPosition = (drag[opt.direction] / singleWidth * 100) - ((currentItem - numClones) * 100),
+                                draggedPage = -(realPosition / 100 - numClones),
+                                targetPage,
+                                tweenProperties = {},
+                                position;
+                            
+                            // Check minimum drag amount to change slide
+                            if(opt.minDrag > 0 && Math.abs(drag[opt.direction]) <= opt.minDrag) {
+                                targetPage = currentItem;
+                            } 
+                            
+                            // Make sure it doesn't come back in place
+                            else if(draggedPage > currentItem) {
+                                targetPage = Math.ceil(draggedPage);
                             } else {
-                                if ((startItem % (total + 1)) === (roundedDraggedPage % (total + 1))) {
-                                    roundedDraggedPage -= 1;
-                                }
+                                targetPage = Math.floor(draggedPage);
                             }
-                            left = -(totalWidth * roundedDraggedPage + (numClones * singleWidth));
-                            currentItem = roundedDraggedPage;
-                            TweenMax.to($slider, opt.speed, {
-                                x: left,
-                                ease: opt.ease,
-                                onComplete: function () {
-                                    update();
-                                    if (opt.onDragRepositioned) {
-                                        opt.onDragRepositioned($items.eq(currentItem + numClones), total + 1, $this);
-                                    }
-                                    $this.trigger('extra:slider:onDragRepositioned', [$items.eq(currentItem + numClones), total + 1, $this]);
-                                }
-                            });
+                            
+                            // Get position in percent
+                            position = -(draggedPage + numClones);
+                            position = position * 100;
+                            
+                            // Set pixel position to 0
+                            tweenProperties[opt.direction] = 0;
+                            TweenMax.set($slider, tweenProperties);
+                            
+                            // Set percent position according to position
+                            tweenProperties = {};
+                            tweenProperties[opt.direction + 'Percent'] = position;
+                            TweenMax.set($slider, tweenProperties);
+                            
+                            // Update drag for next time
+                            drag.update();
+                            
+                            // Go to correct page
+                            gotoPage(targetPage);
+                            
+                            // Events
                             if (opt.onDragEnd) {
                                 opt.onDragEnd($items.eq(currentItem + numClones), total + 1, $this);
                             }
@@ -485,12 +473,11 @@
                 }
             }
 
-            /*********************************** FIRST UPDATE ***********************************/
+            /*********************************** INIT ***********************************/
             initialize();
             update();
-
-            /*********************************** ON INIT ***********************************/
-            // TRIGGER ON INIT
+            
+            // Events
             if (opt.onInit) {
                 opt.onInit($items.eq(currentItem + numClones), total + 1, $this);
             }
