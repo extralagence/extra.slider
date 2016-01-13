@@ -20,7 +20,7 @@
             'direction': 'x',
             'draggable': false,
             'ease': Quad.easeOut,
-            'forcedDimensions': true,
+            'forcedDimensions': false,
             'keyboard': false,
             'margin': 1,
             'minDrag': 0,
@@ -57,7 +57,7 @@
                 numClones = 0,
                 $navigation = opt.navigation || $this.find('.navigation'),
                 $pagination = opt.pagination || $this.find('.pagination'),
-                singleWidth = 0,
+                singleDimension = 0,
                 singleHeight = 0,
                 total = $items.length - 1,
                 currentItem = opt.startAt,
@@ -79,7 +79,8 @@
             /*********************************** INITIALIZE ***********************************/
             function initialize() {
                 
-                var tweenProperties = {};
+                var tweenItemProperties = {},
+                    tweenSliderProperties = {};
                 
                 // set index
                 $items.each(function (index) {
@@ -91,23 +92,26 @@
                     $this.addClass('extra-slider-slide');
                     updateClones();
                     $items.each(function (index, element) {
-                        tweenProperties = {};
-                        tweenProperties[opt.direction] = (index * 100) + '%';
-                        TweenMax.set(element, tweenProperties);
+                        tweenItemProperties = {};
+                        tweenItemProperties[opt.direction] = (index * 100) + '%';
+                        TweenMax.set(element, tweenItemProperties);
                     });
+                    tweenSliderProperties[opt.direction + 'Percent'] = (currentItem - numClones) * 100
+                    TweenMax.set($slider, tweenSliderProperties);
                 }
-                
                 // is fade
                 else if (opt.type === "fade") {
                     $this.addClass('extra-slider-fade');
-                    $items.each(function (i) {
-                        if (i === currentItem) {
-                            TweenMax.set($(this), {autoAlpha: 1, zIndex: 2});
+                    $items.each(function (index) {
+                        if (index === currentItem) {
+                            TweenMax.set($(this), {autoAlpha: 1, zIndex: total + 1});
                         } else {
-                            TweenMax.set($(this), {autoAlpha: 0, zIndex: 1});
+                            TweenMax.set($(this), {autoAlpha: 0, zIndex: total - index + 1});
                         }
                     });
                 }
+                
+                $items.not(".extra-slider-clone").first().addClass("extra-slider-first");
             }
 
             /*********************************** UPDATE ***********************************/
@@ -126,8 +130,8 @@
                 }
 
                 // ACTIVE CLASS
-                $items.removeClass('active');
-                $items.eq(currentItem + numClones).addClass('active');
+                $items.removeClass('extra-slider-active');
+                $items.eq(currentItem + numClones).addClass('extra-slider-active');
 
                 // TRIGGER ON UPDATE
                 if (opt.onUpdate) {
@@ -184,12 +188,10 @@
                 // endHandler for slide
                 if (opt.type === "slide") {
                     adjustPosition();
-                } else if (opt.type === "fade" && previousItem.length) {
-                    TweenMax.set(previousItem.hide(), {autoAlpha: 0});
                 }
 
                 // set active
-                $items.eq(currentItem + numClones).addClass('active');
+                $items.eq(currentItem + numClones).addClass('extra-slider-active');
 
                 if (!isNaN(opt.auto) && opt.auto > 0) {
                     autoSlide();
@@ -214,10 +216,10 @@
                         ease: opt.ease
                     };
 
-                $items.removeClass('active');
+                $items.removeClass('extra-slider-active');
 
                 previousItem = currentItem;
-                currentItem = parseInt(newPage, 10);
+                currentItem = newPage;
                 
                 adjustPosition();
                 
@@ -228,7 +230,7 @@
 
                 if (opt.paginate) {
                     $pagination.each(function () {
-                        $(this).find("a").removeClass("active").eq(currentItem).addClass("active");
+                        $(this).find("a").removeClass("extra-slider-link-active").eq(currentItem).addClass("extra-slider-link-active");
                     });
                 }
 
@@ -238,28 +240,40 @@
                     tweenProperties[opt.direction + 'Percent'] = position;
                     TweenMax.to($slider, time, tweenProperties);
                 } else if (opt.type === "fade") {
-                    $items.eq(previousItem).css("zIndex", 1);
+                    $items.each(function(index, element){
+                        if(index === currentItem) {
+                            $items.eq(index).css("zIndex", 3);
+                        } else if(index === previousItem) {
+                            $items.eq(index).css("zIndex", 2);
+                                
+                        } else {
+                            $items.eq(index).css("zIndex", 1);
+                        }
+                    });
                     tweenProperties.autoAlpha = 1;
-                    TweenMax.to($items.eq(currentItem).show().css("zIndex", 2), time, tweenProperties);
+                    TweenMax.fromTo($items.eq(currentItem), time, {
+                        autoAlpha: 0
+                    },
+                    tweenProperties);
                 }
             }
 
             function updateClones() {
 
                 // REMOVE ALL CLONES
-                $items.find('.cloned').remove();
+                $items.find('.extra-slider-clone').remove();
 
                 // CLONE BEFORE
-                $items.first().before($items.slice(-opt.margin).clone(true).addClass('cloned'));
+                $items.first().before($items.slice(-opt.margin).clone(true).addClass('extra-slider-clone'));
 
                 // CLONE AFTER
-                $items.last().after($items.slice(0, opt.margin).clone(true).addClass('cloned'));
+                $items.last().after($items.slice(0, opt.margin).clone(true).addClass('extra-slider-clone'));
 
                 // GET ALL ITEMS (clones included)
                 $items = $slider.find('> li');
 
                 // COUNT CLONES
-                numClones = $items.filter('.cloned').size() / 2 || 0;
+                numClones = $items.filter('.extra-slider-clone').size() / 2 || 0;
 
                 // TRIGGER ON UPDATE
                 if (opt.onUpdateClones) {
@@ -343,22 +357,23 @@
                 if (!$pagination.length) {
                     $pagination = $('<div class="pagination"></div>').insertAfter($wrapper);
                 }
-                if (opt.paginateContent !== '' && opt.paginateContent.length > 0) {
-                    $pagination.empty();
-                    for (i = 0; i <= total; i += 1) {
-                        $("<a>", {'href': '#'}).html(opt.paginateContent !== '' ? opt.paginateContent.replace("%d", (i + 1)) : i + 1).appendTo($pagination);
-                    }
-                }
-
                 $pagination.each(function () {
-                    $(this).find("a").removeClass('active').eq(currentItem).addClass('active');
+                    var $_pagination = $(this);
+                    
+                    // Populate pagination with links
+                    for (i = 0; i <= total; i += 1) {
+                        $("<a>", {'href': '#'}).html(opt.paginateContent !== '' ? opt.paginateContent.replace("%d", (i + 1)) : i + 1).appendTo($_pagination);
+                    }
+                    
+                    // Set up links
+                    $_pagination.find("a").removeClass('extra-slider-link-active').eq(currentItem).addClass('extra-slider-link-active');
 
-                    $('a', $(this)).each(function (i) {
-                        $(this).click(function () {
-                            if (!$(this).hasClass('active') && !$(this).hasClass('disabled')) {
-                                gotoPage(i);
-                            }
-                            return false;
+                    // On click on links
+                    $('a', $_pagination).each(function (index, item) {
+                        var $link = $(item);
+                        $link.click(function (event) {
+                            event.preventDefault();
+                            gotoPage(index);
                         });
                     });
                 });
@@ -367,10 +382,12 @@
             /*********************************** KEYBOARD ***********************************/
             if (opt.keyboard) {
                 $window.on('keydown', function (event) {
-                    if (event.which === 39) {
+                    if (event.which === 40 || event.which === 39) {
+                        event.preventDefault();
                         gotoNext();
                     }
-                    if (event.which === 37) {
+                    if (event.which === 38 || event.which === 37) {
+                        event.preventDefault();
                         gotoPrev();
                     }
                 });
@@ -411,7 +428,7 @@
                         
                         onDragStart: function () {
                             // Get the width to be able to convert pixel to percents
-                            singleWidth = $items.first().width();
+                            singleDimension = opt.direction === 'x' ? $items.first().width() : $items.first().height();
                             
                             // Events
                             if (opt.onDragStart) {
@@ -423,7 +440,7 @@
                         onDragEnd: function () {
                             
                             // Position, from pixels to percent
-                            var realPosition = (drag[opt.direction] / singleWidth * 100) - ((currentItem - numClones) * 100),
+                            var realPosition = (drag[opt.direction] / singleDimension * 100) - ((currentItem - numClones) * 100),
                                 draggedPage = -(realPosition / 100 - numClones),
                                 targetPage,
                                 tweenProperties = {},
