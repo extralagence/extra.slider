@@ -2,7 +2,7 @@
  *
  *
  *
- * EXTRA SLIDER 2.0
+ * EXTRA SLIDER 1.3
  * http://slider.extralagence.com
  *
  *
@@ -55,8 +55,6 @@
                 $slider = $wrapper.find('> ul'),
                 $items = $slider.find('> li'),
                 numClones = 0,
-                $navigation = opt.navigation || $this.find('.navigation'),
-                $pagination = opt.pagination || $this.find('.pagination'),
                 singleDimension = 0,
                 singleHeight = 0,
                 total = $items.length - 1,
@@ -74,19 +72,30 @@
             if (opt.draggable) {
                 opt.margin += 1;
             }
-            
+
+            // get navigation and pagination
+            if (opt.navigate) {
+                if (!opt.navigation || (opt.navigation && opt.navigation.length && opt.navigation.length < 1)) {
+                    opt.navigation = $this.find('.navigation');
+                }
+            }
+            if (opt.navigate) {
+                if (!opt.pagination || (opt.pagination && opt.pagination.length && opt.pagination.length < 1)) {
+                    opt.pagination = $this.find('.pagination');
+                }
+            }
 
             /*********************************** INITIALIZE ***********************************/
             function initialize() {
-                
+
                 var tweenItemProperties = {},
                     tweenSliderProperties = {};
-                
+
                 // set index
                 $items.each(function (index) {
                     $(this).data('index', index);
                 });
-                
+
                 // is slide
                 if (opt.type === "slide") {
                     $this.addClass('extra-slider-slide');
@@ -96,7 +105,7 @@
                         tweenItemProperties[opt.direction] = (index * 100) + '%';
                         TweenMax.set(element, tweenItemProperties);
                     });
-                    tweenSliderProperties[opt.direction + 'Percent'] = (currentItem - numClones) * 100
+                    tweenSliderProperties[opt.direction + 'Percent'] = (currentItem - numClones) * 100;
                     TweenMax.set($slider, tweenSliderProperties);
                 }
                 // is fade
@@ -110,13 +119,13 @@
                         }
                     });
                 }
-                
+
                 $items.not(".extra-slider-clone").first().addClass("extra-slider-first");
             }
 
             /*********************************** UPDATE ***********************************/
             function update() {
-                
+
                 if (opt.forcedDimensions) {
                     $slider.css({
                         width: 'auto',
@@ -148,12 +157,12 @@
             /*********************************** FUNCTIONS ***********************************/
             // adjust the slider position
             function adjustPosition() {
-                
-                if(opt.type === 'slide' && $slider[0]._gsTransform === undefined) {
+
+                if (opt.type === 'slide' && $slider[0]._gsTransform === undefined) {
                     return;
                 }
-                
-                var needAdjustement = false, 
+
+                var needAdjustement = false,
                     currentItemReference = currentItem,
                     currentPosition = 0,
                     adjustedPosition = 0,
@@ -161,7 +170,7 @@
                     delta = 0,
                     position = 0,
                     tweenProperties = {};
-                
+
                 if (currentItem > total) {
                     needAdjustement = true;
                     // too far on the left (previous)
@@ -171,8 +180,8 @@
                     // too far on the right (next)
                     currentItem = currentItem + (total + 1);
                 }
-                
-                if(needAdjustement && opt.type === 'slide') {        
+
+                if (needAdjustement && opt.type === 'slide') {
                     currentPosition = $slider[0]._gsTransform[opt.direction + 'Percent'];
                     targetPosition = -(currentItemReference + numClones);
                     targetPosition *= 100;
@@ -182,6 +191,7 @@
                     TweenMax.set($slider, tweenProperties);
                 }
             }
+
             // when the first animation is finished
             function endHandler(time, previousItem) {
 
@@ -220,16 +230,16 @@
 
                 previousItem = currentItem;
                 currentItem = newPage;
-                
+
                 adjustPosition();
-                
+
                 if (opt.onMoveStart && time > 0) {
                     opt.onMoveStart($items.eq(currentItem + numClones), total + 1, $this);
                 }
                 $this.trigger('extra:slider:moveStart', [$items.eq(currentItem + numClones), total + 1, $this]);
 
-                if (opt.paginate) {
-                    $pagination.each(function () {
+                if (opt.paginate && opt.pagination.length) {
+                    opt.pagination.each(function () {
                         $(this).find("a").removeClass("extra-slider-link-active").eq(currentItem).addClass("extra-slider-link-active");
                     });
                 }
@@ -240,21 +250,21 @@
                     tweenProperties[opt.direction + 'Percent'] = position;
                     TweenMax.to($slider, time, tweenProperties);
                 } else if (opt.type === "fade") {
-                    $items.each(function(index, element){
-                        if(index === currentItem) {
+                    $items.each(function (index, element) {
+                        if (index === currentItem) {
                             $items.eq(index).css("zIndex", 3);
-                        } else if(index === previousItem) {
+                        } else if (index === previousItem) {
                             $items.eq(index).css("zIndex", 2);
-                                
+
                         } else {
                             $items.eq(index).css("zIndex", 1);
                         }
                     });
                     tweenProperties.autoAlpha = 1;
                     TweenMax.fromTo($items.eq(currentItem), time, {
-                        autoAlpha: 0
-                    },
-                    tweenProperties);
+                            autoAlpha: 0
+                        },
+                        tweenProperties);
                 }
             }
 
@@ -311,8 +321,8 @@
                     autoSlide();
                 });
             }
-            
-            
+
+
             /*********************************** LISTENERS ***********************************/
             $(this).on('update', function () {
                 update();
@@ -338,33 +348,38 @@
             }
 
             /*********************************** NAVIGATION ***********************************/
-            if (opt.navigate || $navigation.length) {
-                if (!$navigation.length) {
-                    $navigation = $('<div class="navigation"><a href="#" class="prev">Previous</a><a href="#" class="next">Next</a></div>').insertAfter($wrapper);
-                }
-                $('a.prev', $navigation).on("click", function (event) {
-                    event.preventDefault();
-                    gotoPrev();
-                });
-                $('a.next', $navigation).on("click", function (event) {
-                    event.preventDefault();
-                    gotoNext();
+            if (opt.navigate && opt.navigation.length) {
+
+                opt.navigation.each(function (index, element) {
+                    var $_navigation = $(this);
+                    if ($_navigation.find('a').length < 2) {
+                        $("<a>", {'href': '#', 'class': 'next'}).appendTo($_navigation);
+                        $("<a>", {'href': '#', 'class': 'prev'}).appendTo($_navigation);
+                    }
+
+                    $('a.prev', $_navigation).on("click", function (event) {
+                        event.preventDefault();
+                        gotoPrev();
+                    });
+                    $('a.next', $_navigation).on("click", function (event) {
+                        event.preventDefault();
+                        gotoNext();
+                    });
                 });
             }
 
             /*********************************** PAGINATION ***********************************/
-            if (opt.paginate) {
-                if (!$pagination.length) {
-                    $pagination = $('<div class="pagination"></div>').insertAfter($wrapper);
-                }
-                $pagination.each(function () {
+            if (opt.paginate && opt.pagination.length) {
+                opt.pagination.each(function () {
+
+                    // Current pagination
                     var $_pagination = $(this);
-                    
+
                     // Populate pagination with links
                     for (i = 0; i <= total; i += 1) {
                         $("<a>", {'href': '#'}).html(opt.paginateContent !== '' ? opt.paginateContent.replace("%d", (i + 1)) : i + 1).appendTo($_pagination);
                     }
-                    
+
                     // Set up links
                     $_pagination.find("a").removeClass('extra-slider-link-active').eq(currentItem).addClass('extra-slider-link-active');
 
@@ -425,58 +440,58 @@
                         lockAxis: false,
                         throwProps: true,
                         zIndexBoost: false,
-                        
+
                         onDragStart: function () {
                             // Get the width to be able to convert pixel to percents
                             singleDimension = opt.direction === 'x' ? $items.first().width() : $items.first().height();
-                            
+
                             // Events
                             if (opt.onDragStart) {
                                 opt.onDragStart($items.eq(currentItem + numClones), total + 1, $this);
                             }
                             $this.trigger('extra:slider:onDragStart', [$items.eq(currentItem + numClones), total + 1, $this]);
                         },
-                        
+
                         onDragEnd: function () {
-                            
+
                             // Position, from pixels to percent
                             var realPosition = (drag[opt.direction] / singleDimension * 100) - ((currentItem - numClones) * 100),
                                 draggedPage = -(realPosition / 100 - numClones),
                                 targetPage,
                                 tweenProperties = {},
                                 position;
-                            
+
                             // Check minimum drag amount to change slide
-                            if(opt.minDrag > 0 && Math.abs(drag[opt.direction]) <= opt.minDrag) {
+                            if (opt.minDrag > 0 && Math.abs(drag[opt.direction]) <= opt.minDrag) {
                                 targetPage = currentItem;
-                            } 
-                            
+                            }
+
                             // Make sure it doesn't come back in place
-                            else if(draggedPage > currentItem) {
+                            else if (draggedPage > currentItem) {
                                 targetPage = Math.ceil(draggedPage);
                             } else {
                                 targetPage = Math.floor(draggedPage);
                             }
-                            
+
                             // Get position in percent
                             position = -(draggedPage + numClones);
                             position = position * 100;
-                            
+
                             // Set pixel position to 0
                             tweenProperties[opt.direction] = 0;
                             TweenMax.set($slider, tweenProperties);
-                            
+
                             // Set percent position according to position
                             tweenProperties = {};
                             tweenProperties[opt.direction + 'Percent'] = position;
                             TweenMax.set($slider, tweenProperties);
-                            
+
                             // Update drag for next time
                             drag.update();
-                            
+
                             // Go to correct page
                             gotoPage(targetPage);
-                            
+
                             // Events
                             if (opt.onDragEnd) {
                                 opt.onDragEnd($items.eq(currentItem + numClones), total + 1, $this);
@@ -493,7 +508,7 @@
             /*********************************** INIT ***********************************/
             initialize();
             update();
-            
+
             // Events
             if (opt.onInit) {
                 opt.onInit($items.eq(currentItem + numClones), total + 1, $this);
