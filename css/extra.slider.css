@@ -3,14 +3,9 @@
  * DEFAULT STYLES
  *
  ********************/
-.extra-slider {
-	overflow: visible;
-}
 .extra-slider,
 .extra-slider .wrapper {
-	margin: 0 auto;
 	position: relative;
-	z-index: 10;
 }
 .extra-slider .wrapper {
 	overflow: hidden;
@@ -18,19 +13,14 @@
 .extra-slider ul {
 	display: block;
 	list-style: none;
-    margin: auto;
 	position: relative;
-    height: auto;
 }
 .extra-slider li {
 	display: block;
 	list-style: none;
-	margin: 0;
-	padding: 0;
 	position: absolute;
 	top: 0; 
     left: 0;
-    max-width: 100%;
 }
 .extra-slider li.extra-slider-first {
     position: relative;
