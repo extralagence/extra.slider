@@ -2,7 +2,7 @@
  *
  *
  *
- * EXTRA SLIDER 1.2
+ * EXTRA SLIDER 2.0
  * http://slider.extralagence.com
  *
  *
@@ -17,11 +17,12 @@
 
         var opt = $.extend({
             'auto': false,
+            'direction': 'x',
             'draggable': false,
             'ease': Quad.easeOut,
-            'forcedDimensions': true,
+            'forcedDimensions': false,
             'keyboard': false,
-            'margin': 0,
+            'margin': 1,
             'minDrag': 0,
             'navigate': true,
             'navigation': null,
@@ -56,14 +57,11 @@
                 numClones = 0,
                 $navigation = opt.navigation || $this.find('.navigation'),
                 $pagination = opt.pagination || $this.find('.pagination'),
-                singleWidth = 0,
+                singleDimension = 0,
                 singleHeight = 0,
                 total = $items.length - 1,
-                visible = -1,
-                totalWidth = singleWidth,
                 currentItem = opt.startAt,
                 previousItem = total,
-                offset = 0,
                 i = 0,
             // AUTOMATIC
                 autoTween,
@@ -76,48 +74,124 @@
             if (opt.draggable) {
                 opt.margin += 1;
             }
+            
+
+            /*********************************** INITIALIZE ***********************************/
+            function initialize() {
+                
+                var tweenItemProperties = {},
+                    tweenSliderProperties = {};
+                
+                // set index
+                $items.each(function (index) {
+                    $(this).data('index', index);
+                });
+                
+                // is slide
+                if (opt.type === "slide") {
+                    $this.addClass('extra-slider-slide');
+                    updateClones();
+                    $items.each(function (index, element) {
+                        tweenItemProperties = {};
+                        tweenItemProperties[opt.direction] = (index * 100) + '%';
+                        TweenMax.set(element, tweenItemProperties);
+                    });
+                    tweenSliderProperties[opt.direction + 'Percent'] = (currentItem - numClones) * 100
+                    TweenMax.set($slider, tweenSliderProperties);
+                }
+                // is fade
+                else if (opt.type === "fade") {
+                    $this.addClass('extra-slider-fade');
+                    $items.each(function (index) {
+                        if (index === currentItem) {
+                            TweenMax.set($(this), {autoAlpha: 1, zIndex: total + 1});
+                        } else {
+                            TweenMax.set($(this), {autoAlpha: 0, zIndex: total - index + 1});
+                        }
+                    });
+                }
+                
+                $items.not(".extra-slider-clone").first().addClass("extra-slider-first");
+            }
+
+            /*********************************** UPDATE ***********************************/
+            function update() {
+                
+                if (opt.forcedDimensions) {
+                    $slider.css({
+                        width: 'auto',
+                        height: 'auto'
+                    }).width($items.first().width()).height($items.first().height());
+                }
+
+                // POSITION AND WIDTH
+                if (opt.type === 'slide') {
+                    adjustPosition();
+                }
+
+                // ACTIVE CLASS
+                $items.removeClass('extra-slider-active');
+                $items.eq(currentItem + numClones).addClass('extra-slider-active');
+
+                // TRIGGER ON UPDATE
+                if (opt.onUpdate) {
+                    opt.onUpdate($items.eq(currentItem + numClones), total + 1, $this);
+                }
+                $this.trigger('extra:slider:update', [$items.eq(currentItem + numClones), total + 1, $this]);
+
+                if (drag) {
+                    drag.update();
+                }
+
+            }
 
             /*********************************** FUNCTIONS ***********************************/
             // adjust the slider position
             function adjustPosition() {
-                if (currentItem > total) {
-                    // too far on the left (previous)
-                    currentItem = 0;
-                } else if (currentItem < 0) {
-                    // too far on the right (next)
-                    currentItem = total;
+                
+                if(opt.type === 'slide' && $slider[0]._gsTransform === undefined) {
+                    return;
                 }
-                var left = -(totalWidth * currentItem + (numClones * singleWidth));
-                TweenMax.set($slider, {x: left});
+                
+                var needAdjustement = false, 
+                    currentItemReference = currentItem,
+                    currentPosition = 0,
+                    adjustedPosition = 0,
+                    targetPosition = 0,
+                    delta = 0,
+                    position = 0,
+                    tweenProperties = {};
+                
+                if (currentItem > total) {
+                    needAdjustement = true;
+                    // too far on the left (previous)
+                    currentItem = currentItem % (total + 1);
+                } else if (currentItem < 0) {
+                    needAdjustement = true;
+                    // too far on the right (next)
+                    currentItem = currentItem + (total + 1);
+                }
+                
+                if(needAdjustement && opt.type === 'slide') {        
+                    currentPosition = $slider[0]._gsTransform[opt.direction + 'Percent'];
+                    targetPosition = -(currentItemReference + numClones);
+                    targetPosition *= 100;
+                    delta = targetPosition - currentPosition;
+                    position = -(((currentItem + numClones) * 100) + delta);
+                    tweenProperties[opt.direction + 'Percent'] = position;
+                    TweenMax.set($slider, tweenProperties);
+                }
             }
-
-            // get the blocs dimensions
-            function getDimension(type) {
-                var max = 0,
-                    item,
-                    current;
-                $items.not('.cloned').each(function () {
-                    item = $(this);
-                    current = (type === 'height') ? item.outerHeight(true) : item.outerWidth(true);
-                    if (current > max) {
-                        max = current;
-                    }
-                });
-                return max;
-            }
-
             // when the first animation is finished
             function endHandler(time, previousItem) {
 
                 // endHandler for slide
                 if (opt.type === "slide") {
                     adjustPosition();
-                } else if (opt.type === "fade" && previousItem.length) {
-                    TweenMax.set(previousItem.hide(), {autoAlpha: 0});
                 }
 
                 // set active
-                $items.eq(currentItem + numClones).addClass('active');
+                $items.eq(currentItem + numClones).addClass('extra-slider-active');
 
                 if (!isNaN(opt.auto) && opt.auto > 0) {
                     autoSlide();
@@ -133,162 +207,73 @@
             /*********************************** GO TO PAGE ***********************************/
             function gotoPage(newPage, time) {
 
-                if (newPage === currentItem) {
-                    return;
-                }
-
                 time = (time !== undefined) ? time : opt.speed;
 
-                var realCurrentItem,
-                    left;
+                var position,
+                    tweenProperties = {
+                        onComplete: endHandler,
+                        onCompleteParams: [time],
+                        ease: opt.ease
+                    };
 
-                $items.removeClass('active');
+                $items.removeClass('extra-slider-active');
 
-                if (!TweenMax.isTweening($slider) && !TweenMax.isTweening($items)) {
+                previousItem = currentItem;
+                currentItem = newPage;
+                
+                adjustPosition();
+                
+                if (opt.onMoveStart && time > 0) {
+                    opt.onMoveStart($items.eq(currentItem + numClones), total + 1, $this);
+                }
+                $this.trigger('extra:slider:moveStart', [$items.eq(currentItem + numClones), total + 1, $this]);
 
-                    previousItem = currentItem;
-                    currentItem = parseInt(newPage, 10);
+                if (opt.paginate) {
+                    $pagination.each(function () {
+                        $(this).find("a").removeClass("extra-slider-link-active").eq(currentItem).addClass("extra-slider-link-active");
+                    });
+                }
 
-                    if (opt.type === 'fade' || opt.type === 'custom') {
-                        if (currentItem > total) {
-                            currentItem = 0;
-                        } else if (currentItem < 0) {
-                            currentItem = total;
+                if (opt.type === "slide") {
+                    position = -(currentItem + numClones);
+                    position = position * 100;
+                    tweenProperties[opt.direction + 'Percent'] = position;
+                    TweenMax.to($slider, time, tweenProperties);
+                } else if (opt.type === "fade") {
+                    $items.each(function(index, element){
+                        if(index === currentItem) {
+                            $items.eq(index).css("zIndex", 3);
+                        } else if(index === previousItem) {
+                            $items.eq(index).css("zIndex", 2);
+                                
+                        } else {
+                            $items.eq(index).css("zIndex", 1);
                         }
-                    }
-
-                    realCurrentItem = currentItem;
-                    if (realCurrentItem > total) {
-                        // too far on the left (previous)
-                        realCurrentItem = 0;
-                    } else if (realCurrentItem < 0) {
-                        // too far on the right (next)
-                        realCurrentItem = total;
-                    }
-
-                    if (opt.onMoveStart && time > 0) {
-                        opt.onMoveStart($items.eq(realCurrentItem + numClones), total + 1, $this);
-                    }
-                    $this.trigger('extra:slider:moveStart', [$items.eq(currentItem + numClones), total + 1, $this]);
-
-                    if (opt.paginate) {
-                        $pagination.each(function () {
-                            $(this).find("a").removeClass("active").eq(realCurrentItem).addClass("active");
-                        });
-                    }
-
-                    if (opt.type === "slide") {
-                        left = -(totalWidth * currentItem + (numClones * singleWidth));
-                        if (offset !== 0) {
-                            if (currentItem > total) {
-                                left += singleWidth * offset;
-                            }
-                            if (currentItem < 0) {
-                                left -= singleWidth * offset;
-                            }
-                        }
-                        TweenMax.to($slider, time, {
-                            x: left,
-                            onComplete: endHandler,
-                            onCompleteParams: [time],
-                            ease: opt.ease
-                        });
-                    } else if (opt.type === "fade") {
-                        $items.eq(previousItem).css("zIndex", 1);
-                        TweenMax.to($items.eq(currentItem).show().css("zIndex", 2), time, {
-                            css: {autoAlpha: 1},
-                            onComplete: endHandler,
-                            onCompleteParams: [time, $items.eq(previousItem)]
-                        });
-                    }
-                }
-            }
-
-            /*********************************** UPDATE ***********************************/
-            function update() {
-
-                var newVisible;
-
-                if (opt.forcedDimensions) {
-                    // RESET DIMENSIONS
-                    TweenMax.set($slider, {
-                        clearProps: "width"
                     });
-                    TweenMax.set([$slider, $items, $wrapper], {
-                        clearProps: "width,height"
-                    });
+                    tweenProperties.autoAlpha = 1;
+                    TweenMax.fromTo($items.eq(currentItem), time, {
+                        autoAlpha: 0
+                    },
+                    tweenProperties);
                 }
-
-                // GET DIMENSIONS
-                // TODO: one call
-                singleWidth = getDimension('width');
-                singleHeight = getDimension('height');
-
-                // MULTIPLE AT A TIME
-                totalWidth = singleWidth * visible;
-                newVisible = Math.max(1, Math.floor($wrapper.width() / singleWidth));
-                if (newVisible !== visible) {
-                    visible = newVisible;
-                    total = Math.floor(($items.not('.cloned').length - 1) / visible);
-                    offset = Math.abs((total + 1) * visible - ($items.not('.cloned').length));
-                    if (opt.type === 'slide') {
-                        updateClones();
-                    }
-                    update();
-                    return false;
-                }
-
-
-                // SET DIMENSIONS
-                if (opt.forcedDimensions) {
-                    $items.css({
-                        'width': singleWidth + 'px',
-                        'height': singleHeight + 'px'
-                    });
-                    $wrapper.css({
-                        'width': totalWidth + 'px',
-                        'height': singleHeight + 'px'
-                    });
-                }
-
-                // POSITION AND WIDTH
-                if (opt.type === 'slide') {
-                    adjustPosition();
-                    $slider.width(99999);
-                }
-
-                // ACTIVE CLASS
-                $items.removeClass('active');
-                $items.eq(currentItem + numClones).addClass('active');
-
-                // TRIGGER ON UPDATE
-                if (opt.onUpdate) {
-                    opt.onUpdate($items.eq(currentItem + numClones), total + 1, $this);
-                }
-                $this.trigger('extra:slider:update', [$items.eq(currentItem + numClones), total + 1, $this]);
-
-                if (drag) {
-                    drag.update();
-                }
-
             }
 
             function updateClones() {
 
                 // REMOVE ALL CLONES
-                $items.find('.cloned').remove();
+                $items.find('.extra-slider-clone').remove();
 
                 // CLONE BEFORE
-                $items.first().before($items.slice(-(visible + opt.margin + offset)).clone(true).addClass('cloned'));
+                $items.first().before($items.slice(-opt.margin).clone(true).addClass('extra-slider-clone'));
 
                 // CLONE AFTER
-                $items.last().after($items.slice(0, visible + opt.margin + offset).clone(true).addClass('cloned'));
+                $items.last().after($items.slice(0, opt.margin).clone(true).addClass('extra-slider-clone'));
 
                 // GET ALL ITEMS (clones included)
                 $items = $slider.find('> li');
 
                 // COUNT CLONES
-                numClones = $items.filter('.cloned').size() / 2 || 0;
+                numClones = $items.filter('.extra-slider-clone').size() / 2 || 0;
 
                 // TRIGGER ON UPDATE
                 if (opt.onUpdateClones) {
@@ -326,28 +311,8 @@
                     autoSlide();
                 });
             }
-
-            /*********************************** SETUP VARS ***********************************/
-            $items.each(function (index) {
-                $(this).data('index', index);
-            });
-            singleWidth = getDimension('width');
-            singleHeight = getDimension('height');
-
-            /*********************************** INITIALIZE ***********************************/
-            if (opt.type === "slide") {
-                $this.addClass('extra-slider-slide');
-            } else if (opt.type === "fade") {
-                $this.addClass('extra-slider-fade');
-                $items.each(function (i) {
-                    if (i === currentItem) {
-                        TweenMax.set($(this), {css: {autoAlpha: 1, zIndex: 2}});
-                    } else {
-                        TweenMax.set($(this), {css: {autoAlpha: 0, zIndex: 1}});
-                    }
-                });
-            }
-
+            
+            
             /*********************************** LISTENERS ***********************************/
             $(this).on('update', function () {
                 update();
@@ -373,17 +338,17 @@
             }
 
             /*********************************** NAVIGATION ***********************************/
-            if (opt.navigate) {
+            if (opt.navigate || $navigation.length) {
                 if (!$navigation.length) {
                     $navigation = $('<div class="navigation"><a href="#" class="prev">Previous</a><a href="#" class="next">Next</a></div>').insertAfter($wrapper);
                 }
-                $('a.prev', $navigation).on("click", function () {
+                $('a.prev', $navigation).on("click", function (event) {
+                    event.preventDefault();
                     gotoPrev();
-                    return false;
                 });
-                $('a.next', $navigation).on("click", function () {
+                $('a.next', $navigation).on("click", function (event) {
+                    event.preventDefault();
                     gotoNext();
-                    return false;
                 });
             }
 
@@ -392,22 +357,23 @@
                 if (!$pagination.length) {
                     $pagination = $('<div class="pagination"></div>').insertAfter($wrapper);
                 }
-                if (opt.paginateContent !== '' && opt.paginateContent.length > 0) {
-                    $pagination.empty();
-                    for (i = 0; i <= total; i += 1) {
-                        $("<a>", {'href': '#'}).html(opt.paginateContent !== '' ? opt.paginateContent.replace("%d", (i + 1)) : i + 1).appendTo($pagination);
-                    }
-                }
-
                 $pagination.each(function () {
-                    $(this).find("a").removeClass('active').eq(currentItem).addClass('active');
+                    var $_pagination = $(this);
+                    
+                    // Populate pagination with links
+                    for (i = 0; i <= total; i += 1) {
+                        $("<a>", {'href': '#'}).html(opt.paginateContent !== '' ? opt.paginateContent.replace("%d", (i + 1)) : i + 1).appendTo($_pagination);
+                    }
+                    
+                    // Set up links
+                    $_pagination.find("a").removeClass('extra-slider-link-active').eq(currentItem).addClass('extra-slider-link-active');
 
-                    $('a', $(this)).each(function (i) {
-                        $(this).click(function () {
-                            if (!$(this).hasClass('active') && !$(this).hasClass('disabled')) {
-                                gotoPage(i);
-                            }
-                            return false;
+                    // On click on links
+                    $('a', $_pagination).each(function (index, item) {
+                        var $link = $(item);
+                        $link.click(function (event) {
+                            event.preventDefault();
+                            gotoPage(index);
                         });
                     });
                 });
@@ -416,10 +382,12 @@
             /*********************************** KEYBOARD ***********************************/
             if (opt.keyboard) {
                 $window.on('keydown', function (event) {
-                    if (event.which === 39) {
+                    if (event.which === 40 || event.which === 39) {
+                        event.preventDefault();
                         gotoNext();
                     }
-                    if (event.which === 37) {
+                    if (event.which === 38 || event.which === 37) {
+                        event.preventDefault();
                         gotoPrev();
                     }
                 });
@@ -452,87 +420,64 @@
 
                 if (Draggable !== undefined) {
                     Draggable.create($slider, {
-                        type: 'x',
+                        type: opt.direction,
                         cursor: 'move',
                         lockAxis: false,
                         throwProps: true,
                         zIndexBoost: false,
-                        onDrag: function () {
-                            var draggedPage = ((-(drag.x / singleWidth)) - numClones),
-                                targetPage,
-                                left;
-                            if (draggedPage % (total + 1) < 0 || (draggedPage >= total + 1)) {
-                                if (draggedPage % (total + 1) < 0) {
-                                    draggedPage = draggedPage % (total + 1);
-                                }
-                                targetPage = draggedPage < 0 ? total + (1 + draggedPage) : draggedPage - (total + 1);
-                                left = -(totalWidth * targetPage + (numClones * singleWidth));
-                                if (offset !== 0) {
-                                    if (targetPage > total) {
-                                        left += singleWidth * offset;
-                                    }
-                                    if (targetPage < 0) {
-                                        left -= singleWidth * offset;
-                                    }
-                                }
-                                TweenMax.set($slider, {
-                                    x: left
-                                });
-                            }
-                        },
+                        
                         onDragStart: function () {
-                            drag.update();
-                            startX = drag.x;
-                            startItem = currentItem;
+                            // Get the width to be able to convert pixel to percents
+                            singleDimension = opt.direction === 'x' ? $items.first().width() : $items.first().height();
+                            
+                            // Events
                             if (opt.onDragStart) {
                                 opt.onDragStart($items.eq(currentItem + numClones), total + 1, $this);
                             }
                             $this.trigger('extra:slider:onDragStart', [$items.eq(currentItem + numClones), total + 1, $this]);
                         },
+                        
                         onDragEnd: function () {
-                            var dragX = drag.x,
-                                draggedPage,
-                                roundedDraggedPage,
-                                left;
-                            drag.update();
-                            draggedPage = ((-(drag.x / singleWidth)) - numClones);
-                            roundedDraggedPage = Math.round(draggedPage);
-                            if (Math.abs(dragX - startX) < opt.minDrag) {
-                                if (roundedDraggedPage >= total) {
-                                    roundedDraggedPage = total + 1;
-                                } else {
-                                    roundedDraggedPage = startItem;
-                                }
-                            } else if (dragX < startX) {
-                                if ((startItem % (total + 1)) === (roundedDraggedPage % (total + 1))) {
-                                    roundedDraggedPage += 1;
-                                }
+                            
+                            // Position, from pixels to percent
+                            var realPosition = (drag[opt.direction] / singleDimension * 100) - ((currentItem - numClones) * 100),
+                                draggedPage = -(realPosition / 100 - numClones),
+                                targetPage,
+                                tweenProperties = {},
+                                position;
+                            
+                            // Check minimum drag amount to change slide
+                            if(opt.minDrag > 0 && Math.abs(drag[opt.direction]) <= opt.minDrag) {
+                                targetPage = currentItem;
+                            } 
+                            
+                            // Make sure it doesn't come back in place
+                            else if(draggedPage > currentItem) {
+                                targetPage = Math.ceil(draggedPage);
                             } else {
-                                if ((startItem % (total + 1)) === (roundedDraggedPage % (total + 1))) {
-                                    roundedDraggedPage -= 1;
-                                }
+                                targetPage = Math.floor(draggedPage);
                             }
-                            left = -(totalWidth * roundedDraggedPage + (numClones * singleWidth));
-                            if (offset !== 0) {
-                                if (roundedDraggedPage > total) {
-                                    left += singleWidth * offset;
-                                }
-                                if (roundedDraggedPage < 0) {
-                                    left -= singleWidth * offset;
-                                }
-                            }
-                            currentItem = roundedDraggedPage;
-                            TweenMax.to($slider, opt.speed, {
-                                x: left,
-                                ease: opt.ease,
-                                onComplete: function () {
-                                    update();
-                                    if (opt.onDragRepositioned) {
-                                        opt.onDragRepositioned($items.eq(currentItem + numClones), total + 1, $this);
-                                    }
-                                    $this.trigger('extra:slider:onDragRepositioned', [$items.eq(currentItem + numClones), total + 1, $this]);
-                                }
-                            });
+                            
+                            // Get position in percent
+                            position = -(draggedPage + numClones);
+                            position = position * 100;
+                            
+                            // Set pixel position to 0
+                            tweenProperties[opt.direction] = 0;
+                            TweenMax.set($slider, tweenProperties);
+                            
+                            // Set percent position according to position
+                            tweenProperties = {};
+                            tweenProperties[opt.direction + 'Percent'] = position;
+                            TweenMax.set($slider, tweenProperties);
+                            
+                            // Update drag for next time
+                            drag.update();
+                            
+                            // Go to correct page
+                            gotoPage(targetPage);
+                            
+                            // Events
                             if (opt.onDragEnd) {
                                 opt.onDragEnd($items.eq(currentItem + numClones), total + 1, $this);
                             }
@@ -545,14 +490,11 @@
                 }
             }
 
-            /*********************************** FIRST UPDATE ***********************************/
+            /*********************************** INIT ***********************************/
+            initialize();
             update();
-            $window.load(function () {
-                update();
-            });
-
-            /*********************************** ON INIT ***********************************/
-            // TRIGGER ON INIT
+            
+            // Events
             if (opt.onInit) {
                 opt.onInit($items.eq(currentItem + numClones), total + 1, $this);
             }
