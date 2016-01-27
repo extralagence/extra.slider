@@ -2,7 +2,7 @@
  *
  *
  *
- * EXTRA SLIDER 1.3
+ * EXTRA SLIDER 1.4
  * http://slider.extralagence.com
  *
  *
@@ -20,7 +20,6 @@
             'direction': 'x',
             'draggable': false,
             'ease': Quad.easeOut,
-            'forcedDimensions': false,
             'keyboard': false,
             'margin': 1,
             'minDrag': 0,
@@ -29,8 +28,6 @@
             'paginate': true,
             'pagination': null,
             'paginateContent': '',
-            'resizable': true,
-            'resizeEvent': 'resize',
             'speed': 0.5,
             'startAt': 0,
             'type': 'slide',
@@ -42,9 +39,9 @@
             'onPause': null,
             'onResume': null,
             'onUpdate': null,
+            'onUpdateClones': null,
             'onDragStart': null,
-            'onDragEnd': null,
-            'onDragRepositioned': null
+            'onDragEnd': null
         }, options);
 
         this.each(function () {
@@ -125,13 +122,6 @@
 
             /*********************************** UPDATE ***********************************/
             function update() {
-
-                if (opt.forcedDimensions) {
-                    $slider.css({
-                        width: 'auto',
-                        height: 'auto'
-                    }).width($items.first().width()).height($items.first().height());
-                }
 
                 // POSITION AND WIDTH
                 if (opt.type === 'slide') {
@@ -340,12 +330,6 @@
                 time = time !== undefined ? time : opt.speed;
                 gotoPage(page, time);
             });
-            // on resize
-            if (opt.resizable) {
-                $window.on(opt.resizeEvent, function () {
-                    update();
-                });
-            }
 
             /*********************************** NAVIGATION ***********************************/
             if (opt.navigate && opt.navigation.length) {
