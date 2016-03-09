@@ -25,3 +25,8 @@
 .extra-slider li.extra-slider-first {
     position: relative;
 }
+.extra-slider.extra-slider-curtain li {
+	margin: 0;
+	overflow: hidden;
+	width: 100%;
+}
