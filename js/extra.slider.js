@@ -76,7 +76,7 @@
 					opt.navigation = $this.find('.navigation');
 				}
 			}
-			if (opt.navigate) {
+			if (opt.paginate) {
 				if (!opt.pagination || (opt.pagination && opt.pagination.length && opt.pagination.length < 1)) {
 					opt.pagination = $this.find('.pagination');
 				}
