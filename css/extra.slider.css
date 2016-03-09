@@ -22,6 +22,7 @@
 	top: 0; 
     left: 0;
 }
+.extra-slider:not(.extra-slider-processed) li:first-child,
 .extra-slider li.extra-slider-first {
     position: relative;
 }
