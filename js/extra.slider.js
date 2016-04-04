@@ -463,7 +463,7 @@
 						type       : opt.direction,
 						cursor     : 'move',
 						lockAxis   : false,
-						throwProps : true,
+						throwProps : false,
 						zIndexBoost: false,
 
 						onDragStart: function () {
