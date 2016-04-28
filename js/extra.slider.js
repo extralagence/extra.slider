@@ -91,6 +91,7 @@
 				// set index
 				$items.each(function (index) {
 					$(this).data('index', index);
+					$(this).data('index-absolute', index);
 				});
 
 				$this.addClass('extra-slider-' + opt.type);
@@ -311,10 +312,25 @@
 				$items.last().after($items.slice(0, opt.margin).clone(true).addClass('extra-slider-clone'));
 
 				// GET ALL ITEMS (clones included)
-				$items = $slider.find('> li');
+				$items = $slider.children('li');
 
 				// COUNT CLONES
-				numClones = $items.filter('.extra-slider-clone').size() / 2 || 0;
+				var $clones = $items.filter('.extra-slider-clone');
+				numClones = Math.max(0, $clones.size() / 2);
+
+				// REFRESH ABSOLUTE INDEX ON EACH CLONES
+				$clones.each(function () {
+					var $clone = $(this),
+						index = $clone.data('index');
+
+					if ($clone.index() < opt.margin) {
+						index = index - (total + 1);
+					} else {
+						index = index + (total + 1);
+					}
+
+					$clone.data('index-absolute', index);
+				});
 
 				// TRIGGER ON UPDATE
 				if (opt.onUpdateClones) {
