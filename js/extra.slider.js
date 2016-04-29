@@ -354,7 +354,7 @@
 			/*********************************** HELPER FUNCTIONS ***********************************/
 			function gotoNext(time) {
 				if (opt.onGotoNext) {
-					opt.onGotoNext($this);
+					opt.onGotoNext($items.eq(currentItem + numClones), currentItem);
 				}
 				$this.trigger('extra:slider:onGotoNext', [$items.eq(currentItem + numClones), currentItem]);
 				time = (time !== undefined) ? time : opt.speed;
@@ -363,7 +363,7 @@
 
 			function gotoPrev(time) {
 				if (opt.onGotoPrev) {
-					opt.onGotoPrev($this);
+					opt.onGotoPrev($items.eq(currentItem + numClones), currentItem);
 				}
 				$this.trigger('extra:slider:onGotoPrev', [$items.eq(currentItem + numClones), currentItem]);
 				time = time !== undefined ? time : opt.speed;
@@ -488,7 +488,7 @@
 						isPaused = false;
 						// listener
 						if (opt.onResume) {
-							opt.onResume($this);
+							opt.onResume($items.eq(currentItem + numClones), currentItem);
 						}
 						$this.trigger('extra:slider:resume', [$items.eq(currentItem + numClones), currentItem]);
 						autoTween.resume();
