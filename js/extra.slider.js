@@ -16,32 +16,34 @@
 	$.fn.extraSlider = function (options) {
 
 		var opt = $.extend({
-			'auto'           : false,
-			'direction'      : 'x',
-			'draggable'      : false,
-			'ease'           : Quad.easeOut,
-			'keyboard'       : false,
-			'margin'         : 1,
-			'minDrag'        : 0,
-			'navigate'       : true,
-			'navigation'     : null,
-			'paginate'       : true,
-			'pagination'     : null,
-			'paginateContent': '',
-			'speed'          : 0.5,
-			'startAt'        : 0,
-			'type'           : 'slide',
-			'onGotoNext'     : null,
-			'onGotoPrev'     : null,
-			'onInit'         : null,
-			'onMoveEnd'      : null,
-			'onMoveStart'    : null,
-			'onPause'        : null,
-			'onResume'       : null,
-			'onUpdate'       : null,
-			'onUpdateClones' : null,
-			'onDragStart'    : null,
-			'onDragEnd'      : null
+			'auto'            : false,
+			'autoPauseEvents' : 'mouseenter',
+			'autoResumeEvents': 'mouseleave',
+			'direction'       : 'x',
+			'draggable'       : false,
+			'ease'            : Quad.easeOut,
+			'keyboard'        : false,
+			'margin'          : 1,
+			'minDrag'         : 0,
+			'navigate'        : true,
+			'navigation'      : null,
+			'paginate'        : true,
+			'pagination'      : null,
+			'paginateContent' : '',
+			'speed'           : 0.5,
+			'startAt'         : 0,
+			'type'            : 'slide',
+			'onGotoNext'      : null,
+			'onGotoPrev'      : null,
+			'onInit'          : null,
+			'onMoveEnd'       : null,
+			'onMoveStart'     : null,
+			'onPause'         : null,
+			'onResume'        : null,
+			'onUpdate'        : null,
+			'onUpdateClones'  : null,
+			'onDragStart'     : null,
+			'onDragEnd'       : null
 		}, options);
 
 		this.each(function () {
@@ -53,17 +55,17 @@
 				$items = $slider.find('> li'),
 				numClones = 0,
 				singleDimension = 0,
-				singleHeight = 0,
 				total = $items.length - 1,
 				currentItem = opt.startAt,
 				previousItem = total,
 				i = 0,
 			// AUTOMATIC
 				autoTween,
+				pauseEvents = "pause",
+				resumeEvents = "resume",
+				isPaused = false,
 			// DRAG
-				drag,
-				startX,
-				startItem;
+				drag;
 
 			// Adjust margin in case there is draggable involved
 			if (opt.draggable) {
@@ -80,6 +82,16 @@
 				if (!opt.pagination || (opt.pagination && opt.pagination.length && opt.pagination.length < 1)) {
 					opt.pagination = $this.find('.pagination');
 				}
+			}
+
+			// add auto pause events
+			if (opt.autoPauseEvents && opt.autoPauseEvents != '') {
+				pauseEvents += (" " + opt.autoPauseEvents);
+			}
+
+			// add auto resume events
+			if (opt.autoResumeEvents && opt.autoResumeEvents != '') {
+				resumeEvents += (" " + opt.autoResumeEvents);
 			}
 
 			/*********************************** INITIALIZE ***********************************/
@@ -452,21 +464,35 @@
 			/*********************************** AUTO ***********************************/
 			if (!isNaN(opt.auto) && opt.auto > 0) {
 				autoSlide();
-				$this.on('mouseenter pause', function () {
-					// listener
-					if (opt.onPause) {
-						opt.onPause($this);
-					}
-					$this.trigger('extra:slider:pause', [$items.eq(currentItem + numClones), currentItem]);
-					autoTween.pause();
-				}).on('mouseleave resume', function () {
-					// listener
-					if (opt.onResume) {
-						opt.onResume($this);
-					}
-					$this.trigger('extra:slider:resume', [$items.eq(currentItem + numClones), currentItem]);
-					autoTween.resume();
-				});
+				$this
+				// PAUSE
+					.on(pauseEvents, function (event) {
+						if (isPaused) {
+							return;
+						}
+						event.stopImmediatePropagation();
+						isPaused = true;
+						// listener
+						if (opt.onPause) {
+							opt.onPause($items.eq(currentItem + numClones), currentItem);
+						}
+						$this.trigger('extra:slider:pause', [$items.eq(currentItem + numClones), currentItem]);
+						autoTween.pause();
+					})
+
+					// RESUME
+					.on(resumeEvents, function (event) {
+						if (!isPaused) {
+							return;
+						}
+						isPaused = false;
+						// listener
+						if (opt.onResume) {
+							opt.onResume($this);
+						}
+						$this.trigger('extra:slider:resume', [$items.eq(currentItem + numClones), currentItem]);
+						autoTween.resume();
+					});
 			}
 
 			/*********************************** DRAGGABLE ***********************************/
