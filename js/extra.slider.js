@@ -139,6 +139,16 @@
 						}
 					});
 				}
+				// is custom
+				else if (opt.type === "custom") {
+					$items.each(function (index) {
+						if (index === currentItem) {
+							TweenMax.set($(this), {zIndex: total + 1});
+						} else {
+							TweenMax.set($(this), {zIndex: total - index + 1});
+						}
+					});
+				}
 
 				$items.not(".extra-slider-clone").first().addClass("extra-slider-first");
 			}
@@ -310,6 +320,20 @@
 					}
 					TweenMax.fromTo($items.eq(currentItem), time, tweenProperties, tweenPropertiesTarget);
 				}
+
+				// is curtain
+				else if (opt.type === "custom") {
+					$items.each(function (index, element) {
+						if (index === currentItem) {
+							$items.eq(index).css("zIndex", 3);
+						} else if (index === previousItem) {
+							$items.eq(index).css("zIndex", 2);
+						} else {
+							$items.eq(index).css("zIndex", 1);
+						}
+					});
+					TweenMax.to($slider, time, tweenProperties);
+				}
 			}
 
 			function updateClones() {
@@ -383,21 +407,29 @@
 
 
 			/*********************************** LISTENERS ***********************************/
-			$(this).on('update', function () {
+			$(this).on('extra:slider:update', function () {
 				update();
 			});
 			// Bind next
-			$(this).on('next', function (event, time) {
+			$(this).on('extra:slider:next', function (event, time) {
 				gotoNext(time);
 			});
 			// Bind prev
-			$(this).on('prev', function (event, time) {
+			$(this).on('extra:slider:prev', function (event, time) {
 				gotoPrev(time);
 			});
 			// Bind goto page
-			$(this).on('goto', function (event, page, time) {
+			$(this).on('extra:slider:goto', function (event, page, time) {
 				time = time !== undefined ? time : opt.speed;
 				gotoPage(page, time);
+			});
+			// Bind pause
+			$(this).on('extra:slider:pause', function (event, page, time) {
+				autoTween.pause();
+			});
+			// Bind resume
+			$(this).on('extra:slider:resume', function (event, page, time) {
+				autoTween.resume();
 			});
 
 			/*********************************** NAVIGATION ***********************************/
