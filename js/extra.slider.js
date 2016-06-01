@@ -169,7 +169,7 @@
 				if (opt.onUpdate) {
 					opt.onUpdate($items.eq(currentItem + numClones), currentItem);
 				}
-				$this.trigger('extra:slider:update', [$items.eq(currentItem + numClones), currentItem]);
+				$this.trigger('extra:slider:updated', [$items.eq(currentItem + numClones), currentItem]);
 
 				if (drag) {
 					drag.update();
