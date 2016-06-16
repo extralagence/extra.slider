@@ -508,7 +508,7 @@
 						if (opt.onPause) {
 							opt.onPause($items.eq(currentItem + numClones), currentItem);
 						}
-						$this.trigger('extra:slider:pause', [$items.eq(currentItem + numClones), currentItem]);
+						$this.trigger('extra:slider:paused', [$items.eq(currentItem + numClones), currentItem]);
 						autoTween.pause();
 					})
 
@@ -522,7 +522,7 @@
 						if (opt.onResume) {
 							opt.onResume($items.eq(currentItem + numClones), currentItem);
 						}
-						$this.trigger('extra:slider:resume', [$items.eq(currentItem + numClones), currentItem]);
+						$this.trigger('extra:slider:resumed', [$items.eq(currentItem + numClones), currentItem]);
 						autoTween.resume();
 					});
 			}
