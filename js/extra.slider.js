@@ -352,7 +352,7 @@
 
 				// COUNT CLONES
 				var $clones = $items.filter('.extra-slider-clone');
-				numClones = Math.max(0, $clones.size() / 2);
+				numClones = Math.max(0, $clones.length / 2);
 
 				// REFRESH ABSOLUTE INDEX ON EACH CLONES
 				$clones.each(function () {
