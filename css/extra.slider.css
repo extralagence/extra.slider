@@ -22,7 +22,9 @@
 }
 .extra-slider-processed li {
 	display: block;
+	flex: 0 0 auto;
 	list-style: none;
+	position: relative;
 }
 .extra-slider-fade li,
 .extra-slider-custom li,
