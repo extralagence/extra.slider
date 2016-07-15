@@ -15,12 +15,21 @@
 	list-style: none;
 	position: relative;
 }
-.extra-slider li {
+.extra-slider.extra-slider-slide ul {
+	align-content: stretch;
+	display: flex;
+	flex-wrap: nowrap;
+}
+.extra-slider-processed li {
 	display: block;
 	list-style: none;
+}
+.extra-slider-fade li,
+.extra-slider-custom li,
+.extra-slider-curtain li {
 	position: absolute;
-	top: 0; 
-    left: 0;
+	top: 0;
+	left: 0;
 }
 .extra-slider:not(.extra-slider-processed) li:first-child,
 .extra-slider li.extra-slider-first {

@@ -111,11 +111,6 @@
 				// is slide
 				if (opt.type === "slide") {
 					updateClones();
-					$items.each(function (index, element) {
-						tweenItemProperties = {};
-						tweenItemProperties[opt.direction + 'Percent'] = (index * 100);
-						TweenMax.set(element, tweenItemProperties);
-					});
 					tweenSliderProperties[opt.direction + 'Percent'] = (currentItem - numClones) * 100;
 					TweenMax.set($slider, tweenSliderProperties);
 				}
