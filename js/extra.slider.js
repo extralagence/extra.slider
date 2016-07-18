@@ -573,7 +573,7 @@
 							position = position * 100;
 
 							// Set pixel position to 0
-							tweenProperties[opt.direction] = "0px";
+							tweenProperties[opt.direction] = 0;
 
 							// Set percent position according to position
 							tweenProperties[opt.direction + 'Percent'] = position;
