@@ -2,7 +2,7 @@
  *
  *
  *
- * EXTRA SLIDER 1.4
+ * EXTRA SLIDER 1.5
  * http://slider.extralagence.com
  *
  *
@@ -59,12 +59,12 @@
 				currentItem = opt.startAt,
 				previousItem = total,
 				i = 0,
-			// AUTOMATIC
+				// AUTOMATIC
 				autoTween,
 				pauseEvents = "pause",
 				resumeEvents = "resume",
 				isPaused = false,
-			// DRAG
+				// DRAG
 				drag;
 
 			// Adjust margin in case there is draggable involved
@@ -110,6 +110,7 @@
 
 				// is slide
 				if (opt.type === "slide") {
+					$this.addClass('extra-slider-direction-' + opt.direction);
 					updateClones();
 					tweenSliderProperties[opt.direction + 'Percent'] = (currentItem - numClones) * 100;
 					TweenMax.set($slider, tweenSliderProperties);
@@ -572,16 +573,13 @@
 							position = position * 100;
 
 							// Set pixel position to 0
-							tweenProperties[opt.direction] = 0;
-							TweenMax.set($slider, tweenProperties);
+							tweenProperties[opt.direction] = "0px";
 
 							// Set percent position according to position
-							tweenProperties = {};
 							tweenProperties[opt.direction + 'Percent'] = position;
-							TweenMax.set($slider, tweenProperties);
 
-							// Update drag for next time
-							drag.update();
+							// Set properties
+							TweenMax.set($slider, tweenProperties);
 
 							// Go to correct page
 							gotoPage(targetPage);

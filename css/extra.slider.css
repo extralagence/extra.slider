@@ -15,10 +15,13 @@
 	list-style: none;
 	position: relative;
 }
-.extra-slider.extra-slider-slide ul {
+.extra-slider-slide ul {
 	align-content: stretch;
 	display: flex;
 	flex-wrap: nowrap;
+}
+.extra-slider-direction-y ul {
+	flex-direction: column;
 }
 .extra-slider-processed li {
 	display: block;
