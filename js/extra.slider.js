@@ -33,6 +33,7 @@
 			'speed'           : 0.5,
 			'startAt'         : 0,
 			'type'            : 'slide',
+			'waitBeforeMove'  : false,
 			'onGotoNext'      : null,
 			'onGotoPrev'      : null,
 			'onInit'          : null,
@@ -237,6 +238,10 @@
 			function gotoPage(newPage, time) {
 
 				time = (time !== undefined) ? time : opt.speed;
+
+				if (opt.waitBeforeMove === true && TweenMax.isTweening($slider)) {
+					return;
+				}
 
 				var position,
 					tweenProperties = {
