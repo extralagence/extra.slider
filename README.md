@@ -1,5 +1,7 @@
 # Extra Slider
 
+[Current version : 1.5](https://github.com/extralagence/extra.slider/releases/tag/1.5)
+
 [Official website](http://slider.extralagence.com/)
 
 [Documentation](http://slider.extralagence.com/documentation/)
