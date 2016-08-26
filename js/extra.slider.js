@@ -21,6 +21,7 @@
 			'autoResumeEvents': 'mouseleave',
 			'direction'       : 'x',
 			'draggable'       : false,
+			'draggableOptions': {},
 			'ease'            : Quad.easeOut,
 			'keyboard'        : false,
 			'margin'          : 1,
@@ -534,7 +535,7 @@
 				$this.addClass('extra-slider-draggable');
 
 				if (Draggable !== undefined) {
-					Draggable.create($slider, {
+					var draggableOpt = $.extend({
 						type       : opt.direction,
 						cursor     : 'move',
 						lockAxis   : false,
@@ -595,7 +596,9 @@
 							}
 							$this.trigger('extra:slider:onDragEnd', [$items.eq(currentItem + numClones), currentItem]);
 						}
-					});
+					}, opt.draggableOptions);
+
+					Draggable.create($slider, draggableOpt);
 					drag = Draggable.get($slider);
 				} else {
 					console.log('Draggable is not detected. You need to load it to enable drag. More info here : http://www.greensock.com/draggable/');
