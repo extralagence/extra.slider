@@ -326,13 +326,13 @@
 				// is curtain
 				else if (opt.type === "custom") {
 					$items.each(function (index, element) {
-						if (index === currentItem) {
+						/*if (index === currentItem) {
 							$items.eq(index).css("zIndex", 3);
 						} else if (index === previousItem) {
 							$items.eq(index).css("zIndex", 2);
 						} else {
 							$items.eq(index).css("zIndex", 1);
-						}
+						}*/
 					});
 					TweenMax.to($slider, time, tweenProperties);
 				}
