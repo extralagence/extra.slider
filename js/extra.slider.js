@@ -139,13 +139,13 @@
 				}
 				// is custom
 				else if (opt.type === "custom") {
-					$items.each(function (index) {
+					/*$items.each(function (index) {
 						if (index === currentItem) {
 							TweenMax.set($(this), {zIndex: total + 1});
 						} else {
 							TweenMax.set($(this), {zIndex: total - index + 1});
 						}
-					});
+					});*/
 				}
 
 				$items.not(".extra-slider-clone").first().addClass("extra-slider-first");
