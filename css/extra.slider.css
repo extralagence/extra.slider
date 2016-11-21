@@ -30,13 +30,11 @@
 	position: relative;
 }
 .extra-slider-fade ul,
-.extra-slider-custom ul,
 .extra-slider-curtain ul {
 	display: flex;
 	flex-wrap: nowrap;
 }
 .extra-slider-fade li,
-.extra-slider-custom li,
 .extra-slider-curtain li {
 	flex: 0 0 auto;
 	position: relative;

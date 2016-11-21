@@ -153,19 +153,7 @@
 				}
 				// is custom
 				else if (opt.type === "custom") {
-					$items.each(function (index) {
-						if (index === currentItem) {
-							TweenMax.set($(this), {
-								xPercent: -(index * 100),
-								zIndex  : total + 1
-							});
-						} else {
-							TweenMax.set($(this), {
-								xPercent: -(index * 100),
-								zIndex  : total - index + 1
-							});
-						}
-					});
+					// Nothing here
 				}
 
 				$items.not(".extra-slider-clone").first().addClass("extra-slider-first");
