@@ -29,16 +29,17 @@
 	list-style: none;
 	position: relative;
 }
+.extra-slider-fade ul,
+.extra-slider-custom ul,
+.extra-slider-curtain ul {
+	display: flex;
+	flex-wrap: nowrap;
+}
 .extra-slider-fade li,
 .extra-slider-custom li,
 .extra-slider-curtain li {
-	position: absolute;
-	top: 0;
-	left: 0;
-}
-.extra-slider:not(.extra-slider-processed) li:first-child,
-.extra-slider li.extra-slider-first {
-    position: relative;
+	flex: 0 0 auto;
+	position: relative;
 }
 .extra-slider.extra-slider-curtain li {
 	margin: 0;

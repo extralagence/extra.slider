@@ -121,9 +121,17 @@
 				else if (opt.type === "fade") {
 					$items.each(function (index) {
 						if (index === currentItem) {
-							TweenMax.set($(this), {autoAlpha: 1, zIndex: total + 1});
+							TweenMax.set($(this), {
+								autoAlpha: 1,
+								xPercent : -(index * 100),
+								zIndex   : total + 1
+							});
 						} else {
-							TweenMax.set($(this), {autoAlpha: 0, zIndex: total - index + 1});
+							TweenMax.set($(this), {
+								autoAlpha: 0,
+								xPercent : -(index * 100),
+								zIndex   : total - index + 1
+							});
 						}
 					});
 				}
@@ -131,21 +139,33 @@
 				else if (opt.type === "curtain") {
 					$items.each(function (index) {
 						if (index === currentItem) {
-							TweenMax.set($(this), {zIndex: total + 1});
+							TweenMax.set($(this), {
+								xPercent: -(index * 100),
+								zIndex  : total + 1
+							});
 						} else {
-							TweenMax.set($(this), {zIndex: total - index + 1});
+							TweenMax.set($(this), {
+								xPercent: -(index * 100),
+								zIndex  : total - index + 1
+							});
 						}
 					});
 				}
 				// is custom
 				else if (opt.type === "custom") {
-					/*$items.each(function (index) {
+					$items.each(function (index) {
 						if (index === currentItem) {
-							TweenMax.set($(this), {zIndex: total + 1});
+							TweenMax.set($(this), {
+								xPercent: -(index * 100),
+								zIndex  : total + 1
+							});
 						} else {
-							TweenMax.set($(this), {zIndex: total - index + 1});
+							TweenMax.set($(this), {
+								xPercent: -(index * 100),
+								zIndex  : total - index + 1
+							});
 						}
-					});*/
+					});
 				}
 
 				$items.not(".extra-slider-clone").first().addClass("extra-slider-first");
@@ -327,12 +347,12 @@
 				else if (opt.type === "custom") {
 					$items.each(function (index, element) {
 						/*if (index === currentItem) {
-							$items.eq(index).css("zIndex", 3);
-						} else if (index === previousItem) {
-							$items.eq(index).css("zIndex", 2);
-						} else {
-							$items.eq(index).css("zIndex", 1);
-						}*/
+						 $items.eq(index).css("zIndex", 3);
+						 } else if (index === previousItem) {
+						 $items.eq(index).css("zIndex", 2);
+						 } else {
+						 $items.eq(index).css("zIndex", 1);
+						 }*/
 					});
 					TweenMax.to($slider, time, tweenProperties);
 				}
