@@ -24,11 +24,10 @@
 			'draggableOptions': {},
 			'ease'            : Quad.easeOut,
 			'keyboard'        : false,
+			'itemSelector'    : '>*',
 			'margin'          : 1,
 			'minDrag'         : 0,
-			'navigate'        : true,
 			'navigation'      : null,
-			'paginate'        : true,
 			'pagination'      : null,
 			'paginateContent' : '',
 			'speed'           : 0.5,
@@ -52,14 +51,16 @@
 
 			/*********************************** SETUP VARS ***********************************/
 			var $this = $(this),
-				$wrapper = $('> .wrapper', this),
-				$slider = $wrapper.find('> ul'),
-				$items = $slider.find('> li'),
+				$items = $this.find(opt.childrenSector),
 				numClones = 0,
 				singleDimension = 0,
 				total = $items.length - 1,
 				currentItem = opt.startAt,
 				previousItem = total,
+				// PAGINATION
+				paginate = opt.pagination && opt.pagination.length > 0,
+				// NAVIGATION
+				navigate = opt.navigation && opt.navigation.length > 0,
 				i = 0,
 				// AUTOMATIC
 				autoTween,
@@ -72,18 +73,6 @@
 			// Adjust margin in case there is draggable involved
 			if (opt.draggable) {
 				opt.margin += 1;
-			}
-
-			// get navigation and pagination
-			if (opt.navigate) {
-				if (!opt.navigation || (opt.navigation && opt.navigation.length && opt.navigation.length < 1)) {
-					opt.navigation = $this.find('.navigation');
-				}
-			}
-			if (opt.paginate) {
-				if (!opt.pagination || (opt.pagination && opt.pagination.length && opt.pagination.length < 1)) {
-					opt.pagination = $this.find('.pagination');
-				}
 			}
 
 			// add auto pause events
@@ -115,7 +104,7 @@
 					$this.addClass('extra-slider-direction-' + opt.direction);
 					updateClones();
 					tweenSliderProperties[opt.direction + 'Percent'] = (currentItem - numClones) * 100;
-					TweenMax.set($slider, tweenSliderProperties);
+					TweenMax.set($this, tweenSliderProperties);
 				}
 				// is fade
 				else if (opt.type === "fade") {
@@ -187,7 +176,7 @@
 			// adjust the slider position
 			function adjustPosition() {
 
-				if (opt.type === 'slide' && $slider[0]._gsTransform === undefined) {
+				if (opt.type === 'slide' && $this[0]._gsTransform === undefined) {
 					return;
 				}
 
@@ -211,13 +200,13 @@
 				}
 
 				if (needAdjustement && opt.type === 'slide') {
-					currentPosition = $slider[0]._gsTransform[opt.direction + 'Percent'];
+					currentPosition = $this[0]._gsTransform[opt.direction + 'Percent'];
 					targetPosition = -(currentItemReference + numClones);
 					targetPosition *= 100;
 					delta = targetPosition - currentPosition;
 					position = -(((currentItem + numClones) * 100) + delta);
 					tweenProperties[opt.direction + 'Percent'] = position;
-					TweenMax.set($slider, tweenProperties);
+					TweenMax.set($this, tweenProperties);
 				}
 			}
 
@@ -248,7 +237,7 @@
 
 				time = (time !== undefined) ? time : opt.speed;
 
-				if (opt.waitBeforeMove === true && TweenMax.isTweening($slider)) {
+				if (opt.waitBeforeMove === true && TweenMax.isTweening($this)) {
 					return;
 				}
 
@@ -284,7 +273,7 @@
 					position = -(currentItem + numClones);
 					position = position * 100;
 					tweenProperties[opt.direction + 'Percent'] = position;
-					TweenMax.to($slider, time, tweenProperties);
+					TweenMax.to($this, time, tweenProperties);
 				}
 
 				// is fade
@@ -342,7 +331,7 @@
 						 $items.eq(index).css("zIndex", 1);
 						 }*/
 					});
-					TweenMax.to($slider, time, tweenProperties);
+					TweenMax.to($this, time, tweenProperties);
 				}
 			}
 
@@ -358,7 +347,7 @@
 				$items.last().after($items.slice(0, opt.margin).clone(true).addClass('extra-slider-clone'));
 
 				// GET ALL ITEMS (clones included)
-				$items = $slider.children('li');
+				$items = $this.find(opt.childrenSector).addClass("extra-slider-item");
 
 				// COUNT CLONES
 				var $clones = $items.filter('.extra-slider-clone');
@@ -443,7 +432,7 @@
 			});
 
 			/*********************************** NAVIGATION ***********************************/
-			if (opt.navigate && opt.navigation.length) {
+			if (navigate) {
 
 				opt.navigation.each(function (index, element) {
 					var $_navigation = $(this);
@@ -464,7 +453,7 @@
 			}
 
 			/*********************************** PAGINATION ***********************************/
-			if (opt.paginate && opt.pagination.length) {
+			if (paginate) {
 				opt.pagination.each(function () {
 
 					// Current pagination
@@ -593,7 +582,7 @@
 							tweenProperties[opt.direction + 'Percent'] = position;
 
 							// Set properties
-							TweenMax.set($slider, tweenProperties);
+							TweenMax.set($this, tweenProperties);
 
 							// Go to correct page
 							gotoPage(targetPage);
@@ -606,8 +595,8 @@
 						}
 					}, opt.draggableOptions);
 
-					Draggable.create($slider, draggableOpt);
-					drag = Draggable.get($slider);
+					Draggable.create($this, draggableOpt);
+					drag = Draggable.get($this);
 				} else {
 					console.log('Draggable is not detected. You need to load it to enable drag. More info here : http://www.greensock.com/draggable/');
 				}

@@ -3,43 +3,34 @@
  * DEFAULT STYLES
  *
  ********************/
-.extra-slider,
-.extra-slider .wrapper {
+.extra-slider {
 	position: relative;
 }
-.extra-slider .wrapper {
-	overflow: hidden;
-}
-.extra-slider ul {
-	display: block;
-	list-style: none;
-	position: relative;
-}
-.extra-slider-slide ul {
+.extra-slider-slide {
 	align-content: stretch;
 	display: flex;
 	flex-wrap: nowrap;
 }
-.extra-slider-direction-y ul {
+.extra-slider-slide.extra-slider-direction-y {
 	flex-direction: column;
 }
-.extra-slider-processed li {
+.extra-slider-processed .extra-slider-item {
 	display: block;
 	flex: 0 0 auto;
 	list-style: none;
 	position: relative;
 }
-.extra-slider-fade ul,
-.extra-slider-curtain ul {
+.extra-slider-fade,
+.extra-slider-curtain {
 	display: flex;
 	flex-wrap: nowrap;
 }
-.extra-slider-fade li,
-.extra-slider-curtain li {
+.extra-slider-fade .extra-slider-item,
+.extra-slider-curtain .extra-slider-item {
 	flex: 0 0 auto;
 	position: relative;
 }
-.extra-slider.extra-slider-curtain li {
+.extra-slider.extra-slider-curtain .extra-slider-item {
 	margin: 0;
 	overflow: hidden;
 	width: 100%;
