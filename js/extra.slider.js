@@ -51,7 +51,7 @@
 
 			/*********************************** SETUP VARS ***********************************/
 			var $this = $(this),
-				$items = $this.find(opt.childrenSector),
+				$items = $this.find(opt.itemSelector),
 				numClones = 0,
 				singleDimension = 0,
 				total = $items.length - 1,
@@ -261,7 +261,7 @@
 				}
 				$this.trigger('extra:slider:moveStart', [$items.eq(currentItem + numClones), currentItem, previousItem, newPage]);
 
-				if (opt.paginate && opt.pagination.length) {
+				if (paginate) {
 					opt.pagination.each(function () {
 						$(this).find("a").removeClass("extra-slider-link-active").eq(currentItem).addClass("extra-slider-link-active");
 					});
@@ -347,7 +347,7 @@
 				$items.last().after($items.slice(0, opt.margin).clone(true).addClass('extra-slider-clone'));
 
 				// GET ALL ITEMS (clones included)
-				$items = $this.find(opt.childrenSector).addClass("extra-slider-item");
+				$items = $this.find(opt.itemSelector).addClass("extra-slider-item");
 
 				// COUNT CLONES
 				var $clones = $items.filter('.extra-slider-clone');
