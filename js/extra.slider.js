@@ -51,7 +51,7 @@
 
 			/*********************************** SETUP VARS ***********************************/
 			var $this = $(this),
-				$items = $this.find(opt.itemSelector),
+				$items = $this.find(opt.itemSelector).addClass("extra-slider-item"),
 				numClones = 0,
 				singleDimension = 0,
 				total = $items.length - 1,
@@ -347,7 +347,7 @@
 				$items.last().after($items.slice(0, opt.margin).clone(true).addClass('extra-slider-clone'));
 
 				// GET ALL ITEMS (clones included)
-				$items = $this.find(opt.itemSelector).addClass("extra-slider-item");
+				$items = $this.find(opt.itemSelector);
 
 				// COUNT CLONES
 				var $clones = $items.filter('.extra-slider-clone');
